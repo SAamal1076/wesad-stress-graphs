@@ -1,0 +1,9 @@
+task,features,model,F1,balAcc,pooled_acc
+binary,time,LR,0.752,0.768,0.814
+binary,time,RF,0.546,0.559,0.669
+binary,motion,LR,0.739,0.782,0.772
+binary,motion,RF,0.779,0.785,0.84
+three_class,time,LR,0.407,0.404,0.605
+three_class,time,RF,0.424,0.423,0.624
+three_class,motion,LR,0.52,0.573,0.596
+three_class,motion,RF,0.529,0.551,0.68
