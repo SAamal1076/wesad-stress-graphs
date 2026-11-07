@@ -43,6 +43,12 @@ Any deviation from this plan is reported as such in the README.*
   causal (past windows only) graph Tikhonov smoothing on a graph built from temporal adjacency and
   feature similarity; compared with a causal moving average over the same horizon.
 
+### Implementation details fixed during M2 (before any model was trained)
+- Before random-walk inference, T is symmetrically normalised (D^-1/2 T D^-1/2), because the
+  diffusion kernel has unit row sums; without it the fit is poor (relative residual ~0.7 vs ~0.05).
+- Random-walk lambda grid {0.005, 0.02, 0.05}, chosen by inner leave-one-subject-out.
+- Wrist pulse peaks are detected on the inverted E4 BVP signal (more consistent timing vs ECG).
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
