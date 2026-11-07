@@ -49,6 +49,17 @@ Any deviation from this plan is reported as such in the README.*
 - Random-walk lambda grid {0.005, 0.02, 0.05}, chosen by inner leave-one-subject-out.
 - Wrist pulse peaks are detected on the inverted E4 BVP signal (more consistent timing vs ECG).
 
+### Decisions fixed before M3 (before any classifier result)
+- Primary model: logistic regression (median imputation, standardisation, class-balanced), with C
+  and the random-walk lambda tuned by inner cross-validation grouped by subject (5 folds, for
+  compute reasons, instead of inner LOSO). Grid: C in {0.01, 0.1, 1}; lambda in {0.005, 0.02, 0.05}.
+- Robustness model: random forest (100 trees, min_samples_leaf 5, class-balanced, 5 seeds),
+  run for "levels" and "levels + random-walk graph" only; it uses the lambda selected by the
+  logistic-regression inner CV of the same outer fold.
+- Holm correction over the primary family, separately for LOSO and for cross-order, logistic
+  regression only: H1 (2 tasks), H2 (chest, wrist x 2 tasks), H3 (2 alternatives x chest, wrist
+  x 2 tasks) = 14 paired Wilcoxon tests on per-subject macro-F1.
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
