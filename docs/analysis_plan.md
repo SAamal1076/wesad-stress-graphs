@@ -167,6 +167,10 @@ hence stronger fusion. This is a design change, not only the scale revision allo
   the preparation), closer to heart-rate dynamics.
 - The selected (eta, theta) is fixed for every WESAD run; neither is tuned on WESAD (this replaces the
   inner-CV choice of lambda above). Hypotheses H8-H9 and the comparison set are unchanged.
+- Gate result (8 Nov 2026, experiments/m6_gate.py, results/m6/gate*.csv): passing settings were
+  (eta, theta) = (0, 4), (0, 8), (0.25, 4), (0.25, 8); no eta = 0.5 setting passed (independent signals
+  fused in 100 % of trials at theta >= 4). Selected by the rule above: eta = 0.25, theta = 4
+  (S1 fusion 1 %, S2a 100 %, S2b 92 %, S3 100 %). Descriptive slow null: some edge fused in 15 % of trials.
 
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).

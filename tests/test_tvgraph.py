@@ -93,3 +93,22 @@ def test_recovers_planted_clusters():
         within.append(w[same].mean())
         between.append(w[~same].mean())
     assert np.mean(within) > 3 * np.mean(between)
+
+
+def test_selected_setting_recovers_planted_clusters():
+    """Same generator as the B1 test above (6 nodes, 3 + 3), with the setting chosen by the synthetic gate."""
+    rng = np.random.default_rng(3)
+    m = 240
+    t = np.linspace(0, 6 * np.pi, m)
+    src = [np.sin(t + rng.uniform(0, 6)) + 0.5 * np.sin(2.3 * t), np.cos(1.7 * t) + rng.standard_normal(m) * 0.3]
+    within, between = [], []
+    for _ in range(20):
+        Y = np.stack([src[0] + 0.6 * rng.standard_normal(m) for _ in range(3)]
+                     + [src[1] + 0.6 * rng.standard_normal(m) for _ in range(3)])[None]
+        Y = (Y - Y.mean(2, keepdims=True)) / Y.std(2, keepdims=True) / np.sqrt(m)
+        w = fit(Y, lam=4.0, gamma=0.5, eta=0.25)["w"][0]
+        s, tt = edge_index(6)
+        same = (s < 3) == (tt < 3)
+        within.append(w[same].mean())
+        between.append(w[~same].mean())
+    assert np.mean(within) > 3 * np.mean(between)

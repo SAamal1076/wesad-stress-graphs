@@ -103,7 +103,7 @@ def main():
     dec["passes"] = ((dec.S1_fused <= 0.05) & (dec.S2a_pass >= 0.90) & (dec.S2b_pass >= 0.90)
                      & (dec.S3_pass >= 0.80))
     dec["eligible"] = dec.index.get_level_values("eta") != ETA_REF
-    dec["min_recovery"] = dec[["S2a_pass", "S2b_pass", "S3_pass"]].min(1)
+    dec["min_recovery"] = dec[["S2a_pass", "S2b_pass", "S3_pass"]].min(axis=1)
     dec.to_csv(out / "gate_decision.csv")
     print("\n", dec.to_string())
     cand = dec[dec.passes & dec.eligible].reset_index()
