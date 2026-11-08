@@ -258,6 +258,7 @@ def fig_aucs(auc):
         ax.set_xticks(range(3), ["aHR", "D", "aHR + D"])
         ax.set_title(f"{dev}: {contrast.replace('_', ' ')}", fontsize=10, color=INK, loc="left")
         ax.set_ylim(0, 1.08)
+        ax.set_xlim(-0.45, 2.45)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
         ax.tick_params(colors=INK2, labelsize=9)

@@ -21,6 +21,11 @@ The full end-to-end report (fundamentals, methods, results, discussion) is in [`
 5. **Graph methods did not give significant accuracy gains** (pre-registered tests, Holm-corrected, n = 15),
    and the model calls 36 % of (never-seen) meditation windows "stress": slow deep breathing resembles
    breathing during the spoken stress test.
+6. **A learned total-variation graph, tracked causally in real time, confirms the decoupling but adds
+   nothing to heart rate.** A synthetic test exposed false fusion in the planned joint model before any
+   WESAD data was used; the amended convex online version works, but heart rate minus its rest level stays
+   the best index (per-subject AUC 0.94 chest), and correcting heart rate for movement hurts because the
+   stress test itself involves movement.
 
 | Binary task, per-subject macro-F1 (mean of 15) | LOSO | Cross-protocol-order |
 |---|---|---|
@@ -42,6 +47,9 @@ baseline / stress / amusement). 38 physiological level features (ECG/HRV, wrist 
 temperature, EMG) and, per window, **coupling graphs** between heart rate, respiration, phasic EDA, EMG
 and movement, estimated by correlation, partial correlation, and **random-walk diffusion-kernel graph
 inference** (min ‖T̃ − α·expm(−L(w))‖² + λΣw, exact matrix-exponential gradient, unit-tested).
+A second family of graphs is **learned from the total variation of the signals on the graph** (Kalofolias
+log-degree graph learning, per window and as a causal time-varying graph with an l1 penalty on graph changes),
+compared with the classic additional-heart-rate index.
 Evaluation by leave-one-subject-out **and** cross-protocol-order, everything fitted inside the training
 folds, per-subject metrics, paired Wilcoxon tests with Holm correction. Every stage's settings were
 committed to [`docs/analysis_plan.md`](docs/analysis_plan.md) **before** it was run (see the commit history).
@@ -51,10 +59,12 @@ committed to [`docs/analysis_plan.md`](docs/analysis_plan.md) **before** it was 
 ```
 scripts/        prepare_wesad.py (shrink WESAD to per-subject .npz), eda_audit.py, eda_figures.py (data audit)
 src/wesad/      windows.py, evaluation.py (LOSO + leakage checks), physio.py (signal processing, features),
-                graphs.py (dependency matrix, partial correlation, random-walk graph inference)
+                graphs.py (dependency matrix, partial correlation, random-walk graph inference),
+                tvgraph.py (joint graph-TV denoising + graph learning), tvgraph_online.py (causal time-varying graph)
 experiments/    m1_* shortcuts and cross-order check · m2_* features and descriptive effects ·
                 m3_* classifiers and tests · m4_* personalisation, no-clock sensitivity, G2 smoothing ·
-                m5_interpret.py (decoupling robustness, ablation, self-reports, meditation, failures)
+                m5_interpret.py (decoupling robustness, ablation, self-reports, meditation, failures) ·
+                m6_* / m6c_* learned TV graphs: synthetic gates, WESAD features, decoupling index, tests
 tests/          leakage, windowing and graph-inference tests (pytest)
 results/        summary tables (CSV) per milestone; per-window data is not redistributed
 figures/        all figures
@@ -66,7 +76,7 @@ docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, mile
 1. Download WESAD (2.5 GB) from the [official link](https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx) and
    unzip it to `data/WESAD/` (folders `S2` … `S17`). Raw data is not included here (dataset terms).
 2. `pip install -r requirements.txt` (Python 3.13 was used).
-3. `bash run_all.sh` — runs the whole pipeline in order (about 30–40 minutes on 2 CPU cores, 8 GB RAM).
+3. `bash run_all.sh` — runs the whole pipeline in order (about 1.5 hours on 2 CPU cores, 8 GB RAM).
 
 ## Data and licence
 

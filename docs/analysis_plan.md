@@ -216,6 +216,9 @@ time-varying coupling graph adds to the classic additional-heart-rate index.
   plus 30 s, in both scenarios. Selected: highest mean AUC over the two scenarios; ties within 0.005 go to
   the smaller mu. mu = 0 is always eligible, so the gate always selects a value; mu = 0 would mean that
   temporal regularisation does not help and M6-C reduces to the independent per-window graph.
+- mu gate result (8 Nov 2026, experiments/m6c_gate.py, results/m6/gate_mu*.csv): mu = 0.25 selected
+  (mean AUC 0.998 vs 0.992 at mu = 0; median delay 47.5 / 42.5 s vs 30 / 32.5 s). mu >= 0.5 exceeded the
+  delay limit; mu = 4 froze the graph in the decouple scenario (AUC 0.07).
 
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
