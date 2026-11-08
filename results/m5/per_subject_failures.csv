@@ -1,0 +1,16 @@
+subject,cross_order,loso,stai_change,hr_change,readme_note
+S2,0.891,0.879,10.0,4.597,chest temperature sensor not fully attached
+S3,0.921,0.88,11.0,31.211,sunny baseline; valence 7 after stress
+S4,1.0,1.0,8.0,19.204,
+S5,0.964,0.959,8.0,26.578,may have slept in meditation 1
+S6,0.988,0.985,6.0,9.143,not really stressed by the interview
+S7,1.0,1.0,10.0,16.518,
+S8,0.985,0.963,5.0,20.019,stressful day; cold room during stress
+S9,0.942,0.975,5.0,2.871,
+S10,0.983,0.94,9.0,8.19,
+S11,0.997,0.988,10.0,49.985,
+S13,0.768,0.772,7.0,21.779,
+S14,0.988,0.921,5.0,53.302,
+S15,0.775,0.788,7.0,1.64,did not believe the TSST cover story
+S16,1.0,1.0,6.0,62.775,cold room during stress
+S17,0.945,0.94,9.0,46.917,chest temperature sensor not fully attached
