@@ -8,7 +8,14 @@ The full end-to-end report (fundamentals, methods, results, discussion) is in [`
 
 <p align="center"><img src="figures/report/visuals/graphical_abstract.png" width="1000" alt="Graphical abstract: the data and its two orders of events, the clock shortcut, the fair cross-order test, and the result"></p>
 
-A longer one-page visual summary: [`figures/report/portfolio.png`](figures/report/portfolio.png).
+## Presentation and visual summary
+
+**Slides (16 pages, PDF):** [`docs/presentation.pdf`](docs/presentation.pdf), the project in plain language, from the
+data and the clock shortcut to the real-time version and what carries over to VR.
+
+<p align="center"><a href="docs/presentation.pdf"><img src="figures/report/presentation_preview.png" width="1000" alt="Six slides from the presentation: title, the study at a glance, the clock shortcut, the cross-order fix, heart-movement decoupling under stress, and the real-time version"></a></p>
+
+**One-page visual summary:** [below](#one-page-visual-summary), full size in [`figures/report/portfolio.png`](figures/report/portfolio.png).
 
 ## Key findings
 
@@ -72,8 +79,13 @@ experiments/    m1_* shortcuts and cross-order check · m2_* features and descri
 tests/          leakage, windowing and graph-inference tests (pytest)
 results/        summary tables (CSV) per milestone; per-window data is not redistributed
 figures/        all figures
-docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, milestone reports
+docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, milestone reports,
+                presentation.pdf (slides)
 ```
+
+## One-page visual summary
+
+<p align="center"><img src="figures/report/portfolio.png" width="900" alt="One-page visual summary of the project: data, clock shortcut, cross-order test, features and coupling graphs, results, real-time version"></p>
 
 ## Reproduce
 
