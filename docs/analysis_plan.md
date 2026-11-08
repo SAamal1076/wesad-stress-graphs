@@ -60,6 +60,36 @@ Any deviation from this plan is reported as such in the README.*
   regression only: H1 (2 tasks), H2 (chest, wrist x 2 tasks), H3 (2 alternatives x chest, wrist
   x 2 tasks) = 14 paired Wilcoxon tests on per-subject macro-F1.
 
+### Decisions fixed before M4 (after M3 results, before any M4 result)
+**Personalisation (M4a).**
+- Calibration = the test subject's first 2 minutes of the baseline run (secondary: 5 minutes); the
+  same procedure is applied to every training subject. Every feature is centred on the mean of the
+  calibration windows (windows ending inside the calibration period). No scaling by calibration SD.
+- Windows starting inside the calibration period are removed from evaluation for every model in M4,
+  personalised or not, so all M4 comparisons use identical test windows.
+- Configurations (logistic regression, tuned as in M3): both/levels, both/levels+rw, both/levels+pcorr,
+  chest/levels, chest/levels+rw, wrist/levels, wrist/levels+rw; each without and with personalisation.
+- Sensitivity ("no-clock"): both/levels and both/levels+rw without absolute temperature and tonic
+  skin-conductance level (temp_*_mean, eda_*_scl_mean), because early calibration plus slow drift can
+  re-introduce the clock. These four features were identified as drifting in the M2 descriptive analysis.
+
+**G2 test-time graph smoothing (M4b)**, applied to out-of-fold probabilities of the test subject,
+causal (only windows whose end time is not later than the current window's end), fixed hyperparameters
+(no tuning, to avoid any nested leakage):
+- horizon H = 120 s (primary); sweep H in {30, 60, 120, 300} s reported in full, not used for selection;
+- graph on the windows inside the horizon: W_ij = exp(-(dt_ij / 60 s)^2) * exp(-d_ij^2 / (2 s^2)),
+  d = Euclidean distance between level-feature vectors standardised with training-subject statistics,
+  s = median of the d_ij inside the horizon;
+- Tikhonov: x = (I + L)^-1 p, output at the current window; 3-class: each class smoothed, renormalised;
+- controls: causal moving average over the same horizon; Tikhonov with the temporal kernel only.
+- Latency: time from the start of the stress run to the end of the first window predicted as stress.
+- Bases: both/levels+rw and wrist/levels+rw, personalised (2 min); both/levels+rw not personalised.
+
+**Hypotheses M4** (paired Wilcoxon on per-subject macro-F1, Holm within each scheme, 14 tests):
+- H5: personalised > not personalised (both/levels, both/levels+rw; 2 tasks) = 4 tests.
+- H6: with personalisation, levels+rw > levels (chest, wrist, both; 2 tasks) = 6 tests.
+- H4: G2 (full graph) > moving average, H = 120 s (bases both and wrist, personalised; 2 tasks) = 4 tests.
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
