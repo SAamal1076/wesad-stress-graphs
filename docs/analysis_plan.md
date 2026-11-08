@@ -108,6 +108,30 @@ causal (only windows whose end time is not later than the current window's end),
 - Failures: per-subject F1 vs self-reported stress change, heart-rate change and readme notes.
 All M5 analyses are descriptive; p-values are reported without claims of confirmation.
 
+### Decisions fixed before the TV-graph experiment (M6-B; after M7, before any WESAD computation)
+Approved by Salman on 8 Nov 2026 (option B: nodes = signals inside one window).
+- Nodes and node signals: chest graph (heart rate, respiration, phasic EDA, EMG envelope, chest movement),
+  wrist graph (pulse rate, pulse amplitude, phasic EDA, wrist movement); each node's 60 s series on the
+  4 Hz grid, smoothed by a 2 s moving average, z-scored inside the window and divided by sqrt(m), so that
+  ||y_s|| = 1 and ||y_s - y_t|| = sqrt(2(1 - rho_st)).
+- Joint objective, solved by alternating minimisation (X-step: ADMM network lasso; W-step: Kalofolias
+  primal-dual log-degree graph learning):
+  min_{X, W} 1/2 ||X - Y||_F^2 + lambda * sum_{s<t} W_st ||x_s - x_t||_2 - beta * sum_s log d_s + gamma * ||W||_F^2,
+  W symmetric, W >= 0, d_s = sum_t W_st.
+- beta = 1, gamma = 0.25 (graph scale); lambda in {0.1, 0.3, 0.6}, chosen by the inner cross-validation of the
+  classifier exactly as in M3. These scale values may be revised once, after the synthetic stage only, before
+  any WESAD window is processed; any revision is recorded here.
+- Per-window features: learned edge weights, node degrees, algebraic connectivity, number of fused clusters
+  (edges with ||x_s - x_t|| < 1e-3 merged), TV of Y on the learned graph.
+- Comparison (logistic regression, M3 tuning, LOSO and cross-order, binary and 3-class), base = level features
+  without the four drifting features: base; base + TV graph; base + random-walk graph; base + correlation graph;
+  for chest, wrist and both.
+- Known assumption: the TV term treats coupling as positive and uses no lag search (a 2 s smoothing tolerates
+  delays of a few seconds).
+- Hypotheses (paired Wilcoxon on per-subject macro-F1, Holm within each scheme, 8 tests):
+  H8: base + TV graph > base (chest, wrist; 2 tasks). H9: base + TV graph > base + random-walk graph (chest, wrist; 2 tasks).
+- Descriptive: stress effect on the heart-rate~movement edge (d_z); meditation windows called stress.
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
