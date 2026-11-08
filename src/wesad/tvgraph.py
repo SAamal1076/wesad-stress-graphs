@@ -1,14 +1,20 @@
 """M6-B - joint graph-TV denoising and graph learning (nodes = signals of one window).
 
-    min_{X, W}  1/2 ||X - Y||_F^2 + lam * sum_{s<t} W_st ||x_s - x_t||_2
+    min_{X, W}  1/2 ||X - Y||_F^2 + lam * sum_{s<t} W_st [ (1 - eta) ||y_s - y_t|| + eta ||x_s - x_t|| ]
                 - beta * sum_s log d_s + gamma * ||W||_F^2,      W = W^T >= 0, d = W 1
 
+eta = 1 is the original joint model (B1 showed it over-fuses through a feedback loop); eta = 0 is convex
+graph learning from the total variation of the data Y (X = Y); 0 < eta < 1 keeps the alternating updates
+while the distance seen by the graph keeps the floor (1 - eta) ||y_s - y_t||  (amendment 1, 8 Nov 2026).
+With beta = 1 the solution depends on lam and gamma only through theta = lam / sqrt(2 gamma).
+
 Alternating minimisation (each block is convex, so the objective decreases monotonically):
-  X-step (W fixed): network-lasso / graph-TV denoising, solved by ADMM with V = B X
+  X-step (W fixed): network-lasso / graph-TV denoising with edge weights lam * eta * w_e, solved by ADMM
+      with V = B X
       X <- (I + rho B^T B)^-1 (Y + rho B^T (V - U))
-      v_e <- max(0, 1 - (lam w_e / rho) / ||(BX + U)_e||) (BX + U)_e      (group soft-threshold)
+      v_e <- max(0, 1 - (tau_e / rho) / ||(BX + U)_e||) (BX + U)_e      (group soft-threshold)
       U <- U + B X - V
-  W-step (X fixed): z_e = ||x_s - x_t||_2 and
+  W-step (X fixed): z_e = (1 - eta) ||y_s - y_t|| + eta ||x_s - x_t|| and
       min_w  sum_e lam z_e w_e - beta * sum_s log (S w)_s + 2 gamma ||w||^2,  w >= 0
       (w = upper triangle of W, so ||W||_F^2 = 2 ||w||^2), solved by the primal-dual algorithm of
       Kalofolias (2016), "How to learn a graph from smooth signals", AISTATS.
@@ -39,10 +45,15 @@ def degree_operator(n):
 
 
 # ------------------------------------------------------------------ objective
-def objective(X, Y, w, lam, beta, gamma):
+def edge_distances(B, X):
+    """||x_s - x_t|| for every edge, batched: (batch, E)."""
+    return np.linalg.norm(np.einsum("en,bnm->bem", B, X), axis=2)
+
+
+def objective(X, Y, w, lam, beta, gamma, eta=1.0):
     n = Y.shape[1]
     B, S = incidence(n), degree_operator(n)
-    diff = np.linalg.norm(np.einsum("en,bnm->bem", B, X), axis=2)        # ||x_s - x_t||
+    diff = (1.0 - eta) * edge_distances(B, Y) + eta * edge_distances(B, X)
     d = np.einsum("ne,be->bn", S, w)
     return (0.5 * ((X - Y) ** 2).sum((1, 2)) + lam * (w * diff).sum(1)
             - beta * np.log(np.maximum(d, 1e-300)).sum(1) + 2.0 * gamma * (w ** 2).sum(1))
@@ -105,23 +116,29 @@ def w_step(c, beta, gamma, n, n_iter=2000, tol=1e-9, w0=None):
 
 
 # ------------------------------------------------------------------ alternating solver
-def fit(Y, lam, beta=1.0, gamma=0.25, n_outer=15, x_iter=500, w_iter=2000, track=False):
+def fit(Y, lam, beta=1.0, gamma=0.5, eta=1.0, n_outer=15, x_iter=500, w_iter=2000, track=False):
     """Joint graph-TV denoising + graph learning. Returns dict with X, w, V (B X at the ADMM optimum), history."""
+    if not 0.0 <= eta <= 1.0:
+        raise ValueError("eta must be in [0, 1]")
     nb, n, m = Y.shape
     B = incidence(n)
-    z0 = np.linalg.norm(np.einsum("en,bnm->bem", B, Y), axis=2)
-    w = w_step(lam * z0, beta, gamma, n, n_iter=w_iter)
-    X, state, hist = Y.copy(), None, []
+    zy = edge_distances(B, Y)
+    w = w_step(lam * zy, beta, gamma, n, n_iter=w_iter)        # at X = Y the mixed distance equals zy
+    X, hist = Y.copy(), []
+    V = np.einsum("en,bnm->bem", B, X)
     if track:
-        hist.append(objective(X, Y, w, lam, beta, gamma))
+        hist.append(objective(X, Y, w, lam, beta, gamma, eta))
+    if eta == 0.0:                                              # convex case: X = Y, a single W-step
+        return {"X": X, "w": w, "V": V, "history": np.array(hist)}
+    state = None
     for _ in range(n_outer):
-        X, state = x_step(Y, lam * w, n_iter=x_iter, state=state)
+        X, state = x_step(Y, lam * eta * w, n_iter=x_iter, state=state)
         if track:
-            hist.append(objective(X, Y, w, lam, beta, gamma))
-        z = np.linalg.norm(np.einsum("en,bnm->bem", B, X), axis=2)
+            hist.append(objective(X, Y, w, lam, beta, gamma, eta))
+        z = (1.0 - eta) * zy + eta * edge_distances(B, X)
         w = w_step(lam * z, beta, gamma, n, n_iter=w_iter, w0=w)
         if track:
-            hist.append(objective(X, Y, w, lam, beta, gamma))
+            hist.append(objective(X, Y, w, lam, beta, gamma, eta))
     return {"X": X, "w": w, "V": state[1], "history": np.array(hist)}
 
 
@@ -147,8 +164,16 @@ def n_clusters(V, n, tol=1e-6):
     return out
 
 
+def fusion_degree(Y, X, w, n):
+    """F = 1 - TV_W(X) / TV_W(Y), with TV_W(X) = sum_e w_e ||x_s - x_t||; 0 = no fusion, 1 = all fused."""
+    B = incidence(n)
+    tv_y = (w * edge_distances(B, Y)).sum(1)
+    tv_x = (w * edge_distances(B, X)).sum(1)
+    return np.where(tv_y > 1e-12, 1.0 - tv_x / np.maximum(tv_y, 1e-12), 0.0)
+
+
 def descriptors(Y, res, n):
-    """Per-window features from a fitted batch: edges, degrees, algebraic connectivity, clusters, TV(Y)."""
+    """Per-window features from a fitted batch: edges, degrees, algebraic connectivity, TV(Y), fusion degree."""
     B = incidence(n)
     w = res["w"]
     s, t = edge_index(n)
@@ -157,8 +182,9 @@ def descriptors(Y, res, n):
     W = W + np.swapaxes(W, 1, 2)
     L = np.einsum("bij->bi", W)[:, :, None] * np.eye(n)[None] - W
     ev = np.linalg.eigvalsh(L)
-    tv_y = (w * np.linalg.norm(np.einsum("en,bnm->bem", B, Y), axis=2)).sum(1)
-    return {"w": w, "degree": W.sum(2), "algconn": ev[:, 1], "clusters": n_clusters(res["V"], n), "tv_y": tv_y}
+    tv_y = (w * edge_distances(B, Y)).sum(1)
+    return {"w": w, "degree": W.sum(2), "algconn": ev[:, 1], "tv_y": tv_y,
+            "fusion": fusion_degree(Y, res["X"], w, n)}
 
 
 def prepare_node_signals(Xw, smooth=8):
