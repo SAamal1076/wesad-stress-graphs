@@ -7,9 +7,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 
-R = pathlib.Path("/home/claude/results/eda")
-S = pathlib.Path("/home/claude/data/wesad_small")
-F = pathlib.Path("/home/claude/figures/eda")
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+R = ROOT / "results" / "eda"
+S = ROOT / "data" / "wesad_small"
+F = ROOT / "figures" / "eda"
 (F / "subjects").mkdir(parents=True, exist_ok=True)
 
 SURF, INK, INK2, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#e4e3df"
