@@ -132,6 +132,42 @@ Approved by Salman on 8 Nov 2026 (option B: nodes = signals inside one window).
   H8: base + TV graph > base (chest, wrist; 2 tasks). H9: base + TV graph > base + random-walk graph (chest, wrist; 2 tasks).
 - Descriptive: stress effect on the heart-rate~movement edge (d_z); meditation windows called stress.
 
+### Amendment 1 to M6-B (8 Nov 2026, approved by Salman; before any WESAD window is processed)
+Reason (stage B1, synthetic data only, commit e1fb204): with beta = 1 the model depends on a single number,
+theta = lambda / sqrt(2 gamma) (substituting w = v / sqrt(2 gamma); checked numerically to 1e-9). The
+pre-registered values give theta = 0.14-0.85, where the learned weights are almost uniform. Values that
+recover two planted clusters (theta ~ 3-10) also make independent signals collapse into one cluster
+(93 % of trials at theta = 3.2, 13 % at 9.5, 10 % at 16), and a 2+2+1 structure is never recovered exactly.
+The cause is a feedback loop in the joint model: fused nodes get zero distance, hence a larger weight,
+hence stronger fusion. This is a design change, not only the scale revision allowed above.
+- New objective (eta in [0, 1] mixes the distance seen by the graph between the data Y and the denoised X):
+  min_{X, W} 1/2 ||X - Y||^2 + lambda * sum_{s<t} W_st [ (1 - eta) ||y_s - y_t|| + eta ||x_s - x_t|| ]
+             - beta * sum_s log d_s + gamma * ||W||_F^2.
+  eta = 1 is the original model; eta = 0 is convex graph learning from the total variation of Y (X = Y);
+  0 < eta < 1 keeps the alternating updates while the distance keeps the floor (1 - eta) ||y_s - y_t|| > 0.
+- Scale: beta = 1, gamma = 0.5, so that lambda = theta.
+- Feature change: the number of fused clusters is replaced by the fusion degree
+  F = 1 - TV_W(X) / TV_W(Y), TV_W(X) = sum_{s<t} W_st ||x_s - x_t||, in [0, 1]. At eta = 0, F = 0 by
+  construction and is not used.
+- Synthetic gate (run once, before WESAD). Grid eta in {0, 0.25, 0.5}, theta in {1, 2, 4, 8}; n = 5 nodes,
+  m = 240 samples (60 s at 4 Hz); 100 trials per scenario; seed 2026. Each node series is white Gaussian
+  noise (or a group source plus such noise) passed through the same preparation as WESAD
+  (2 s moving average, z-score, divide by sqrt(m)). Source and noise have equal variance per sample,
+  so the expected within-group correlation is 1 / (1 + s^2) for noise scale s.
+  S1 null: 5 independent nodes. S2a: groups {0,1,2},{3,4}, within correlation 0.6. S2b: same groups,
+  within correlation 0.3. S3: groups {0,1},{2,3},{4}, within correlation 0.6.
+  A setting passes if all hold:
+    (1) S1: share of trials with any fused edge (ADMM split variable ||v_e|| < 1e-6) <= 5 %;
+    (2) S2a and S2b: mean within-group weight >= 3 x mean between-group weight in >= 90 % of trials;
+    (3) S3: the same ratio >= 3 in >= 80 % of trials.
+  Selection among passing settings: largest eta; then lowest S1 fusion rate; then highest minimum pass
+  rate over S2a, S2b, S3; then smallest theta. If no setting passes, M6-B stops and is reported as a
+  negative result; the random-walk graph (M3) remains the graph method.
+  Descriptive only (not part of the decision): the same null with slow signals (AR(1), phi = 0.95 before
+  the preparation), closer to heart-rate dynamics.
+- The selected (eta, theta) is fixed for every WESAD run; neither is tuned on WESAD (this replaces the
+  inner-CV choice of lambda above). Hypotheses H8-H9 and the comparison set are unchanged.
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
