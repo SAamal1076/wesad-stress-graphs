@@ -90,6 +90,24 @@ causal (only windows whose end time is not later than the current window's end),
 - H6: with personalisation, levels+rw > levels (chest, wrist, both; 2 tasks) = 6 tests.
 - H4: G2 (full graph) > moving average, H = 120 s (bases both and wrist, personalised; 2 tasks) = 4 tests.
 
+### Decisions fixed before M5 (interpretation; after M4, before any M5 result)
+- "Final model" for interpretation: logistic regression, chest + wrist levels + random-walk graph,
+  without the four drifting features, no calibration (the most robust M4 configuration under
+  cross-order). Fixed hyperparameters C = 0.1, lambda = 0.02 (middle of the grids), no tuning.
+  It is selected after seeing M4, so its scores are not new evidence; M5 only interprets it.
+- Decoupling robustness: per subject, OLS of the heart-rate~movement edge (random walk, lambda 0.02;
+  chest and wrist) on condition (stress, amusement vs baseline) adjusted for movement level and
+  variability, heart-rate level and breathing irregularity (z-scored within subject); the 15 adjusted
+  stress coefficients are tested with a Wilcoxon signed-rank test. Plus a movement-matched comparison
+  (stress vs non-stress windows inside the same within-subject movement quintile).
+- Modality importance: leave-one-signal-group-out retraining under LOSO and cross-order
+  (groups: ECG, BVP, chest EDA, wrist EDA, respiration, temperature, EMG, chest graph, wrist graph).
+- Self-reports: the final model (trained without meditation) predicts every window of the test
+  subject, including meditation. Per run: mean P(stress) vs STAI state, SAM arousal, PANAS 'stressed'
+  (within-subject Spearman over 5 runs; between-subject Spearman of the TSST-minus-baseline changes).
+- Failures: per-subject F1 vs self-reported stress change, heart-rate change and readme notes.
+All M5 analyses are descriptive; p-values are reported without claims of confirmation.
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
