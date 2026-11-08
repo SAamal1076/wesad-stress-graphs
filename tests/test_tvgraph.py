@@ -112,3 +112,52 @@ def test_selected_setting_recovers_planted_clusters():
         within.append(w[same].mean())
         between.append(w[~same].mean())
     assert np.mean(within) > 3 * np.mean(between)
+
+
+# ------------------------------------------------------------------ M6-C online graph
+from wesad.tvgraph_online import online_fit, online_objective, w_step_prox  # noqa: E402
+
+
+@pytest.mark.parametrize("mu", [0.3, 2.0])
+def test_online_step_satisfies_kkt(mu):
+    rng = np.random.default_rng(6)
+    n, beta, gamma = 5, 1.0, 0.5
+    E = len(edge_index(n)[0])
+    c = rng.uniform(0.0, 6.0, (40, E))
+    w_prev = rng.uniform(0.0, 0.4, (40, E)) * (rng.uniform(size=(40, E)) > 0.3)
+    w = w_step_prox(c, beta, gamma, n, w_prev, mu, n_iter=40000, tol=1e-13)
+    d = w @ degree_operator(n).T
+    s, t = edge_index(n)
+    g0 = c - beta * (1 / d[:, s] + 1 / d[:, t]) + 4 * gamma * w     # gradient without the l1 term
+    tol = 1e-4
+    pos, eq = w > 1e-7, np.abs(w - w_prev) < 1e-7
+    up, down = pos & ~eq & (w > w_prev), pos & ~eq & (w < w_prev)
+    assert np.abs(g0[up] + mu).max() < tol                        # moved up: g0 = -mu
+    assert np.abs(g0[down] - mu).max() < tol                      # moved down: g0 = +mu
+    assert np.abs(g0[pos & eq]).max() < mu + tol                   # stayed: |g0| <= mu
+    zero = ~pos
+    lower = np.where(w_prev[zero] > 1e-7, mu, -mu)                 # at w = 0: g0 >= mu (or >= -mu if w_prev = 0)
+    assert (g0[zero] - lower).min() > -tol
+
+
+def test_online_step_is_a_minimum():
+    rng = np.random.default_rng(7)
+    n, E = 4, 6
+    c = rng.uniform(0.0, 6.0, (30, E))
+    w_prev = rng.uniform(0.05, 0.4, (30, E))
+    w = w_step_prox(c, 1.0, 0.5, n, w_prev, 1.0, n_iter=40000, tol=1e-13)
+    f0 = online_objective(w, c, 1.0, 0.5, n, w_prev, 1.0)
+    for _ in range(50):                                            # random feasible perturbations never improve
+        w2 = np.maximum(w + rng.normal(0, 0.02, w.shape), 0.0)
+        assert np.all(online_objective(w2, c, 1.0, 0.5, n, w_prev, 1.0) >= f0 - 1e-9)
+
+
+def test_online_mu_zero_equals_independent_windows_and_large_mu_freezes():
+    rng = np.random.default_rng(8)
+    Y = rng.standard_normal((2, 6, 5, 60))
+    Y = (Y - Y.mean(3, keepdims=True)) / Y.std(3, keepdims=True) / np.sqrt(60)
+    W0, Z = online_fit(Y, theta=4.0, mu=0.0)
+    ref = w_step(4.0 * Z.reshape(-1, Z.shape[2]), 1.0, 0.5, 5, n_iter=3000, tol=1e-9).reshape(W0.shape)
+    assert np.allclose(W0, ref, atol=1e-6)
+    Wbig, _ = online_fit(Y, theta=4.0, mu=100.0, n_iter=20000)
+    assert np.allclose(Wbig, Wbig[:, :1], atol=1e-6)               # the first graph never moves
