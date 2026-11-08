@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "experiments"))
 from wesad.windows import SUBJECTS, task_view  # noqa: E402
 from wesad.physio import CHEST_NODES, WRIST_NODES, group_columns  # noqa: E402
 from wesad.evaluation import assert_no_subject_leak, per_subject_metrics  # noqa: E402
-from m3_models import C_GRID, LAMBDAS, inner_select, make_lr, outer_splits  # noqa: E402
+from m3_models import LAMBDAS, inner_select, make_lr, outer_splits  # noqa: E402
 from m3_stats import holm  # noqa: E402
 from m4_personalise import CLOCK  # noqa: E402
 

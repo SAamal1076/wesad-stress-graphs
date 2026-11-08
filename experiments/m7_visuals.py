@@ -6,6 +6,7 @@ Used by experiments/m7_portfolio.py (README image) and by the presentation. Ever
 - per-subject macro-F1 summaries (README table) and the M2 coupling-graph features
 """
 import html
+import os
 import pathlib
 import sys
 
@@ -214,14 +215,14 @@ def svg_split(width=520, height=300):
                 f'<path d="M{cx - 15 * s},{cy + 18 * s} Q{cx - 15 * s},{cy - 2 * s} {cx},{cy - 2 * s} '
                 f'Q{cx + 15 * s},{cy - 2 * s} {cx + 15 * s},{cy + 18 * s} Z" fill="{col}"/>')
     p = []
-    p.append(f'<text x="10" y="26" class="b">Train: 8 people, order A</text>')
+    p.append('<text x="10" y="26" class="b">Train: 8 people, order A</text>')
     for i in range(8):
         p.append(person(30 + i * 40, 76, INK))
-    p.append(f'<text x="10" y="150" class="b">Test: 7 other people, order B</text>')
+    p.append('<text x="10" y="150" class="b">Test: 7 other people, order B</text>')
     for i in range(7):
         p.append(person(30 + i * 40, 200, STRESS))
-    p.append(f'<text x="10" y="262" class="s">then the reverse. Nothing from the test people or their</text>'
-             f'<text x="10" y="284" class="s">schedule is used to fit the model.</text>')
+    p.append('<text x="10" y="262" class="s">then the reverse. Nothing from the test people or their</text>'
+             '<text x="10" y="284" class="s">schedule is used to fit the model.</text>')
     p.append(f'<path d="M{width - 70},70 C{width - 20},100 {width - 20},160 {width - 70},190" fill="none" '
              f'stroke="{INK2}" stroke-width="2.5" marker-end="url(#ar)"/>'
              f'<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" '
@@ -414,12 +415,18 @@ def svg_realtime(subject="S5", width=1408, height=420):
     return _svg(width, height, "".join(p))
 
 
+def launch_chromium(pw):
+    """Chrome from $CHROME_PATH, else /usr/bin/google-chrome if present, else Playwright's own Chromium."""
+    path = os.environ.get("CHROME_PATH") or ("/usr/bin/google-chrome" if os.path.exists("/usr/bin/google-chrome") else None)
+    return pw.chromium.launch(executable_path=path) if path else pw.chromium.launch()
+
+
 def render_pngs(svgs, out_dir):
     """Render SVG strings to 2x PNGs with the local fonts (labels inside SVGs need the page's fonts)."""
     from playwright.sync_api import sync_playwright
     out_dir.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as pw:
-        b = pw.chromium.launch(executable_path="/usr/bin/google-chrome")
+        b = launch_chromium(pw)
         pg = b.new_page(device_scale_factor=2)
         for name, s in svgs.items():
             pg.set_content(f'<html><body style="margin:0;background:{PAPER}">{s}</body></html>')

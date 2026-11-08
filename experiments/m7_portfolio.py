@@ -1,14 +1,14 @@
 """One-page visual summary of the project for the README (figures/report/portfolio.png).
 
 Panels are drawn by experiments/m7_visuals.py from the repository's real data and results.
-Run: python experiments/m7_portfolio.py   (needs playwright + a Chrome/Chromium binary to render the PNG)
+Run: python experiments/m7_portfolio.py   (needs playwright: `playwright install chromium`, or set CHROME_PATH)
 """
 import pathlib
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "experiments"))
-from m7_visuals import INK, INK2, MUTED, PAPER, RULE, STRESS, build_all  # noqa: E402
+from m7_visuals import INK, INK2, MUTED, PAPER, RULE, build_all, launch_chromium  # noqa: E402
 
 OUT = ROOT / "figures" / "report"
 
@@ -114,7 +114,7 @@ direction.</div><div>Data: WESAD, Schmidt et al., ICMI 2018, scientific non-comm
 def render(html_path, png_path, width=1600):
     from playwright.sync_api import sync_playwright
     with sync_playwright() as pw:
-        b = pw.chromium.launch(executable_path="/usr/bin/google-chrome")
+        b = launch_chromium(pw)
         pg = b.new_page(viewport={"width": width, "height": 1000}, device_scale_factor=2)
         pg.goto(html_path.resolve().as_uri())
         pg.wait_for_timeout(300)

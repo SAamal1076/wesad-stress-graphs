@@ -2,6 +2,8 @@ numpy==2.5.3
 scipy==1.18.1
 pandas==3.0.5
 scikit-learn==1.9.1
+joblib==1.6.0
 matplotlib==3.11.2
 neurokit2==0.3.0
 pytest==9.1.1
+playwright==1.64.1  # only for the M7 visual summary (then: playwright install chromium)

@@ -13,7 +13,6 @@ Outputs per subject (data/derived/SX_physio.npz):
 """
 from __future__ import annotations
 
-import pathlib
 import warnings
 
 import neurokit2 as nk

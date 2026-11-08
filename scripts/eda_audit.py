@@ -298,7 +298,6 @@ def audit_subject(pkl_path, quest_path, rows):
 
     # ---- subject QC
     r0, lag, rbest = sync_lag(acc_c, acc_w)
-    both = ~np.isnan(ecg_stats[1][0]) and ~np.isnan(bvp_stats[1][0])
     rows["qc"].append(dict(
         subject=sid, chest_dur_s=len(ecg) / FS_CHEST,
         wrist_bvp_dur_s=len(bvp_w) / 64, wrist_eda_dur_s=len(eda_w) / 4,

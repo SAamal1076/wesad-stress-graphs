@@ -11,7 +11,6 @@ import pandas as pd
 from scipy.stats import spearmanr, wilcoxon
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -21,7 +20,7 @@ sys.path.insert(0, str(ROOT / "experiments"))
 from wesad.windows import SUBJECTS, task_view  # noqa: E402
 from wesad.physio import GRID_FS, group_columns, process_subject  # noqa: E402
 from wesad.evaluation import assert_no_subject_leak, per_subject_metrics  # noqa: E402
-from m3_models import ORDER_A, ORDER_B, outer_splits  # noqa: E402
+from m3_models import outer_splits  # noqa: E402
 from m4_personalise import CLOCK  # noqa: E402
 
 R = ROOT / "results" / "m5"
@@ -46,7 +45,6 @@ def lr():
 
 def add_activity(feats):
     """Movement level/variability per window from the 4 Hz activity nodes."""
-    out = []
     for s in SUBJECTS:
         P = process_subject(s)
         w = feats[feats.subject == s]

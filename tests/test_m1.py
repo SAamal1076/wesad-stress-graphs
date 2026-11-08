@@ -3,7 +3,6 @@ import sys
 import pathlib
 
 import numpy as np
-import pandas as pd
 import pytest
 from sklearn.base import BaseEstimator, ClassifierMixin
 
@@ -11,6 +10,11 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 from wesad.windows import (SUBJECTS, LABEL_KEY, build_window_index, condition_runs,  # noqa: E402
                            load_subject, task_view, windows_from_runs)
 from wesad.evaluation import assert_no_subject_leak, loso_splits, run_loso  # noqa: E402
+from wesad.windows import DATA_DIR  # noqa: E402
+
+needs_data = pytest.mark.skipif(
+    not all((DATA_DIR / f"{s}.npz").exists() for s in SUBJECTS),
+    reason="needs the prepared WESAD files in data/wesad_small (run scripts/prepare_wesad.py)")
 
 
 @pytest.fixture(scope="module")
@@ -18,12 +22,14 @@ def win60():
     return build_window_index(60.0, 5.0)
 
 
+@needs_data
 def test_fifteen_subjects_five_runs_each(win60):
     assert sorted(win60.subject.unique(), key=lambda s: int(s[1:])) == SUBJECTS
     runs = win60.groupby("subject").run_id.nunique()
     assert (runs == 5).all()  # baseline, stress, amusement, 2 x meditation
 
 
+@needs_data
 @pytest.mark.parametrize("win_s", [10.0, 60.0])
 def test_every_window_has_one_constant_label(win_s):
     """Re-read the 350 Hz label stream and check every sample inside every window."""
@@ -37,6 +43,7 @@ def test_every_window_has_one_constant_label(win_s):
             assert (seg == r.label).all(), f"{s} window at {r.start_s}s crosses a label change"
 
 
+@needs_data
 def test_windows_stay_inside_their_run(win60):
     for s in SUBJECTS:
         d = load_subject(s)
@@ -47,6 +54,7 @@ def test_windows_stay_inside_their_run(win60):
         assert (w.end_s.values <= r.end_s.values + 1e-9).all()
 
 
+@needs_data
 def test_task_views_exclude_meditation_and_transients(win60):
     for task in ("binary", "three_class"):
         t = task_view(win60, task)
@@ -56,6 +64,7 @@ def test_task_views_exclude_meditation_and_transients(win60):
         assert (t.groupby("subject").y.nunique() == t.y.nunique()).all()
 
 
+@needs_data
 def test_loso_folds_are_disjoint_and_complete(win60):
     g = win60.subject.values
     tested = []
@@ -86,6 +95,7 @@ class SpyClassifier(BaseEstimator, ClassifierMixin):
         return np.zeros(len(X), dtype=int)
 
 
+@needs_data
 def test_run_loso_never_fits_on_test_rows(win60):
     t = task_view(win60, "binary")
     X = np.c_[np.arange(len(t)), np.zeros(len(t))]

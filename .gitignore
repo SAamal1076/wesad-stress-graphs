@@ -4,7 +4,6 @@ __pycache__/
 .pytest_cache/
 *.npz
 *.pkl
-logs/
 # derived per-window data: reproducible from WESAD, not redistributed
 results/m1/windows_*.csv
 results/m1/motion_features_*.csv
