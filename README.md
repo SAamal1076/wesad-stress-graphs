@@ -6,7 +6,9 @@ A leakage-safe, pre-registered analysis of acute-stress detection from wearable 
 
 The full end-to-end report (fundamentals, methods, results, discussion) is in [`docs/REPORT.md`](docs/REPORT.md).
 
-<p align="center"><img src="figures/report/portfolio.png" width="900" alt="One-page visual summary of the project"></p>
+<p align="center"><img src="figures/report/visuals/graphical_abstract.png" width="1000" alt="Graphical abstract: the data and its two orders of events, the clock shortcut, the fair cross-order test, and the result"></p>
+
+A longer one-page visual summary: [`figures/report/portfolio.png`](figures/report/portfolio.png).
 
 ## Key findings
 

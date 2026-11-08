@@ -250,6 +250,8 @@ def icon(kind, x, y, s=1.0, col=INK):
         "watch": '<circle cx="24" cy="27" r="17"/><path d="M24,27 L24,16 M18,4 L30,4 M24,4 L24,10 M24,27 L31,32"/>',
         "heartmove": '<path d="M16,40 C2,30 4,16 12,16 C16,16 18,20 18,20 C18,20 20,16 24,16 C32,16 34,30 18,40 Z"/>'
                      '<path d="M30,10 C34,6 40,6 44,10 M30,18 C34,14 40,14 44,18"/>',
+        "band": '<path d="M16,2 L32,2 L32,12 M16,2 L16,12 M16,36 L16,46 L32,46 L32,36"/><rect x="10" y="12" width="28" '
+                'height="24" rx="6"/><path d="M18,24 L22,24 L25,18 L28,30 L30,24"/>',
         "repo": '<circle cx="12" cy="10" r="5"/><circle cx="12" cy="38" r="5"/><circle cx="36" cy="18" r="5"/>'
                 '<path d="M12,15 L12,33 M36,23 C36,30 20,28 14,34"/>',
     }[kind]
@@ -358,7 +360,9 @@ def build_all():
     runs = runs_table()
     sig = session_signals()
     coupling, n_down = svg_coupling()
+    check_sequences(runs)
     return dict(session=svg_session(sig, runs), timetables=svg_timetables(runs), bench=svg_benchmark_bars(),
+                sequences=svg_sequences(),
                 slopes=svg_slopes(), split=svg_split(), steps=svg_steps(), coupling=coupling,
                 tiles=svg_vr_tiles(), n_down=n_down)
 
@@ -424,11 +428,155 @@ def render_pngs(svgs, out_dir):
         b.close()
 
 
+
+# ------------------------------------------------------------------ protocol orders and graphical abstract
+SEQ = {"A": [1, 3, 4, 2, 4], "B": [1, 2, 4, 3, 4]}       # read from the condition runs of every subject
+
+
+def check_sequences(runs):
+    """Confirm SEQ against the data: every subject of an order has that exact sequence of conditions."""
+    for name, members in (("A", ORDER_A), ("B", ORDER_B)):
+        for s in members:
+            seq = runs[runs.subject == s].sort_values("start").label.tolist()
+            assert seq == SEQ[name], (s, seq)
+
+
+def _seq_row(x0, y0, w, h, seq, gap=10, fs=17, short=False):
+    names = {1: "Rest", 3: "Amusement", 4: "Meditation", 2: "Stress test"}
+    if short:
+        names = {1: "Rest", 3: "Fun", 4: "Calm", 2: "Stress"}
+    bw = (w - gap * (len(seq) - 1)) / len(seq)
+    out = []
+    for i, lab in enumerate(seq):
+        x = x0 + i * (bw + gap)
+        col = COND[lab][1]
+        out.append(f'<rect x="{x:.1f}" y="{y0}" width="{bw:.1f}" height="{h}" rx="8" fill="{col}" opacity="0.16"/>'
+                   f'<rect x="{x:.1f}" y="{y0}" width="6" height="{h}" rx="3" fill="{col}"/>'
+                   f'<text x="{x + bw / 2 + 3:.1f}" y="{y0 + h / 2 + fs * 0.35:.1f}" text-anchor="middle" '
+                   f'style="font-size:{fs}px;fill:{INK};font-weight:{700 if lab == 2 else 500}">{names[lab]}</text>')
+        if i < len(seq) - 1:
+            out.append(f'<text x="{x + bw + gap / 2:.1f}" y="{y0 + h / 2 + 5:.1f}" text-anchor="middle" '
+                       f'style="font-size:14px;fill:{MUTED}">›</text>')
+    return out
+
+
+def svg_sequences(width=1408):
+    p = []
+    for k, (name, n, y) in enumerate((("Order A", len(ORDER_A), 0), ("Order B", len(ORDER_B), 70))):
+        p.append(f'<text x="0" y="{y + 26}" class="b">{name}</text>'
+                 f'<text x="0" y="{y + 48}" class="s">{n} people</text>')
+        p += _seq_row(150, y, width - 150, 56, SEQ[name[-1]])
+    return _svg(width, 128, "".join(p))
+
+
+def svg_graphical_abstract(width=1600, height=680):
+    means, m = coupling_data()
+    n_down = int((m[2] < m[1]).sum())
+    p = [f'<rect width="{width}" height="{height}" fill="{PAPER}"/>']
+    p.append(f'<text x="48" y="62" style="font-family:Lora,serif;font-size:36px;font-weight:600;fill:{INK}">'
+             f'Stress detection that still works when the schedule changes</text>'
+             f'<text x="48" y="94" class="m">Open WESAD dataset: 15 people, chest and wrist wearables, '
+             f'a lab stress test. Every number below comes from that data.</text>')
+    top, ph, pw, gap = 124, 430, 352, 40
+    xs = [48 + i * (pw + gap) for i in range(4)]
+    heads = [("1", "The data"), ("2", "A hidden shortcut"), ("3", "A fair test"), ("4", "The result")]
+    for i, (x, (n, t)) in enumerate(zip(xs, heads)):
+        p.append(f'<rect x="{x}" y="{top}" width="{pw}" height="{ph}" rx="18" fill="#fff" stroke="{RULE}" '
+                 f'stroke-width="1.5"/>'
+                 f'<circle cx="{x + 34}" cy="{top + 38}" r="17" fill="{STRESS if i == 1 else INK}"/>'
+                 f'<text x="{x + 34}" y="{top + 44}" text-anchor="middle" style="font-size:17px;font-weight:700;'
+                 f'fill:#fff">{n}</text>'
+                 f'<text x="{x + 62}" y="{top + 45}" class="b" style="font-size:21px">{t}</text>')
+        if i < 3:
+            ax = x + pw + 6
+            p.append(f'<path d="M{ax},{top + ph / 2} L{ax + gap - 14},{top + ph / 2}" stroke="{MUTED}" '
+                     f'stroke-width="3" marker-end="url(#gaar)"/>')
+    p.append(f'<defs><marker id="gaar" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" '
+             f'orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{MUTED}"/></marker></defs>')
+    # 1: data
+    x = xs[0] + 26
+    p.append(icon("heartmove", x, top + 82, 1.0) + icon("band", x + 64, top + 82, 1.0))
+    p.append(f'<text x="{x + 132}" y="{top + 100}" class="m">Chest + wrist sensors</text>'
+             f'<text x="{x + 132}" y="{top + 124}" class="m">15 people</text>')
+    p.append(f'<text x="{x}" y="{top + 182}" class="s">Two orders of events:</text>')
+    for k, (nm, cnt) in enumerate((("A", len(ORDER_A)), ("B", len(ORDER_B)))):
+        y = top + 202 + k * 92
+        p.append(f'<text x="{x}" y="{y + 20}" class="b" style="font-size:16px">Order {nm}, {cnt} people</text>')
+        p += _seq_row(x, y + 32, pw - 52, 42, SEQ[nm], gap=6, fs=13, short=True)
+    p.append(f'<text x="{x}" y="{top + ph - 26}" class="s">Stress test early or late in the session</text>')
+    # 2: shortcut
+    x = xs[1] + 26
+    p.append(icon("clockx", x + pw / 2 - 26 - 46, top + 78, 1.9, INK).replace(f'stroke="{STRESS}"', 'stroke="none"'))
+    p.append(f'<text x="{xs[1] + pw / 2}" y="{top + 214}" text-anchor="middle" class="m">Minutes since the start, '
+             f'nothing else:</text>'
+             f'<text x="{xs[1] + pw / 2}" y="{top + 270}" text-anchor="middle" '
+             f'style="font-family:Inter Display,Inter,sans-serif;font-size:56px;font-weight:700;fill:{STRESS}">95.7%</text>'
+             f'<text x="{xs[1] + pw / 2}" y="{top + 300}" text-anchor="middle" class="m">accuracy on new people</text>')
+    bx, bw = x, pw - 52
+    for k, (lab, v, col) in enumerate((("Original paper", 93.1, "#7d8aa3"), ("Clock only", 95.7, STRESS))):
+        yy = top + 334 + k * 40
+        w = bw * 0.62 * (v - 85) / 15
+        p.append(f'<text x="{bx}" y="{yy + 17}" class="s">{lab}</text>'
+                 f'<rect x="{bx + 118}" y="{yy + 2}" width="{w:.1f}" height="20" rx="4" fill="{col}"/>'
+                 f'<text x="{bx + 126 + w:.1f}" y="{yy + 18}" class="s" style="font-weight:650;fill:{INK}">{v}%</text>')
+    # 3: fair test
+    x = xs[2] + 26
+
+    def dots(n, col, y0):
+        return "".join(f'<circle cx="{x + 14 + i * 34}" cy="{y0}" r="12" fill="{col}"/>' for i in range(n))
+    p.append(f'<text x="{x}" y="{top + 96}" class="b" style="font-size:16px">Train on order A</text>' + dots(8, INK, top + 122))
+    p.append(f'<text x="{x}" y="{top + 172}" class="b" style="font-size:16px">Test on order B, then reverse</text>'
+             + dots(7, STRESS, top + 198))
+    for k, (ic, l1, l2) in enumerate((("clockx", "Drop 4 measures that", "drift with time"),
+                                     ("graph", "A simple model plus a", "body-signal coupling graph"))):
+        yy = top + 250 + k * 84
+        p.append(icon(ic, x, yy, 0.95))
+        p.append(f'<text x="{x + 62}" y="{yy + 20}" class="m">{l1}</text>'
+                 f'<text x="{x + 62}" y="{yy + 42}" class="m">{l2}</text>')
+    # 4: result: mini slope + mini network
+    x = xs[3] + 26
+    X0, X1, y0, y1 = x + 48, x + 196, top + 84, top + 244
+    yv = lambda v: y1 - (y1 - y0) * (v - 0.5) / 0.5  # noqa: E731
+    for name, a, b, col, dash, sw in SLOPES[::2]:
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        p.append(f'<line x1="{X0}" y1="{yv(a):.1f}" x2="{X1}" y2="{yv(b):.1f}" stroke="{col}" stroke-width="{sw}"{d}/>'
+                 f'<circle cx="{X0}" cy="{yv(a):.1f}" r="6" fill="{col}"/><circle cx="{X1}" cy="{yv(b):.1f}" r="6" fill="{col}"/>'
+                 f'<text x="{X1 + 12}" y="{yv(b) + 7:.1f}" style="font-size:20px;font-weight:700;fill:{col}">{b:.3f}</text>')
+    p.append(f'<text x="{X0 - 12}" y="{yv(0.94) - 14:.1f}" class="s">body</text>'
+             f'<text x="{(X0 + X1) / 2 - 24}" y="{yv(0.64):.1f}" class="s" text-anchor="end" style="fill:{MUTED}">clock</text>'
+             f'<text x="{X0}" y="{y1 + 30}" class="s" text-anchor="middle">LOSO</text>'
+             f'<text x="{X1}" y="{y1 + 30}" class="s" text-anchor="middle">new order</text>')
+    cx, cy, R = x + 40, top + 356, 34
+    ang = [-90, -18, 54, 126, 198]
+    pos = [(cx + R * np.cos(np.radians(a)), cy + R * np.sin(np.radians(a))) for a in ang]
+    for i in range(5):
+        for j in range(i + 1, 5):
+            hl = (i, j) == (0, 4)
+            p.append(f'<line x1="{pos[i][0]:.1f}" y1="{pos[i][1]:.1f}" x2="{pos[j][0]:.1f}" y2="{pos[j][1]:.1f}" '
+                     f'stroke="{STRESS if hl else "#c3cad5"}" stroke-width="{5 if hl else 2}"/>')
+    for px, py in pos:
+        p.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="7" fill="{INK}"/>')
+    p.append(f'<text x="{cx + 56}" y="{top + 340}" class="m" style="font-weight:650;fill:{INK}">Heart stops following</text>'
+             f'<text x="{cx + 56}" y="{top + 362}" class="m" style="font-weight:650;fill:{INK}">movement under stress</text>'
+             f'<text x="{cx + 56}" y="{top + 386}" class="m">{n_down} of 15 people</text>')
+    # bottom strip
+    sy = top + ph + 34
+    p.append(f'<rect x="48" y="{sy}" width="{width - 96}" height="72" rx="14" fill="{INK}"/>'
+             f'<text x="80" y="{sy + 44}" style="font-size:20px;font-weight:700;fill:#fff">For VR training:</text>')
+    for k, (ic, t) in enumerate((("person", "works on a new trainee"), ("lens", "interpretable"),
+                                 ("watch", "near real time"), ("heartmove", "body + behaviour"))):
+        xx = 270 + k * 320
+        p.append(icon(ic, xx, sy + 16, 0.82, "#ffffff") + f'<text x="{xx + 52}" y="{sy + 44}" '
+                 f'style="font-size:19px;fill:#e6eaf0">{t}</text>')
+    return _svg(width, height, "".join(p))
+
+
 if __name__ == "__main__":
     out = ROOT / "figures" / "report" / "visuals"
     out.mkdir(parents=True, exist_ok=True)
     v = build_all()
     v["realtime"] = svg_realtime()
+    v["graphical_abstract"] = svg_graphical_abstract()
     svgs = {k: s for k, s in v.items() if isinstance(s, str)}
     for k, s in svgs.items():
         (out / f"{k}.svg").write_text(s, encoding="utf-8")

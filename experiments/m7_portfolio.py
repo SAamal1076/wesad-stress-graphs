@@ -57,8 +57,11 @@ quietly tracks the time.</p>
 
 <section>
 <h2>The benchmark has a hidden shortcut</h2>
-<p class="lead">All 15 sessions follow almost the same timetable, so the time since the start already reveals which
-condition is running.</p>
+<p class="lead">The study ran in two orders of events: 8 people did amusement before the stress test, 7 did it
+after. Within each order, all sessions follow almost the same timetable, so the time since the start already
+reveals which condition is running.</p>
+{v['sequences']}
+<div style="height:34px"></div>
 {v['timetables']}
 <div class="bench">{v['bench']}
 <p>A model that reads <b>only the clock</b> beats the published benchmark. High scores on this dataset can
