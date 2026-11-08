@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" width="640" height="200" role="img"><style>
+svg text { font-family: 'Inter', sans-serif; fill: #4a5566; }
+svg .s { font-size: 15px; } svg .m { font-size: 17px; }
+svg .b { font-size: 17px; font-weight: 650; fill: #16202e; }
+svg .v { font-family: 'Inter Display','Inter',sans-serif; font-size: 24px; font-weight: 650; }
+svg .big { font-family: 'Inter Display','Inter',sans-serif; font-size: 44px; font-weight: 700; }
+</style><text x="0" y="34" class="m">Original WESAD paper (physiology)</text><rect x="0" y="46" width="297.0" height="30" rx="4" fill="#7d8aa3"/><text x="309.0" y="69" class="v" style="fill:#16202e">93.1%</text><text x="0" y="116" class="m">Minutes since start, nothing else</text><rect x="0" y="128" width="392.3" height="30" rx="4" fill="#eb6834"/><text x="404.3" y="151" class="v" style="fill:#16202e">95.7%</text><text x="0" y="190" class="s">Accuracy, stress vs non-stress, leave-one-person-out. Axis starts at 85%.</text></svg>
