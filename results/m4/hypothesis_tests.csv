@@ -1,0 +1,29 @@
+scheme,hyp,task,compare,mean_diff,n_better,n_worse,p,p_holm
+loso,H5,binary,both:levels calib2 vs none,0.012466247960078189,7,6,0.6001794871405539,1.0
+loso,H5,binary,both:levels+rw calib2 vs none,0.007341387839849634,7,6,0.8613042569883052,1.0
+loso,H6,binary,chest: levels+rw vs levels (calib2),0.01913317970114172,9,3,0.15793931050013033,1.0
+loso,H6,binary,wrist: levels+rw vs levels (calib2),-0.011310343913420043,6,7,0.24886387493792206,1.0
+loso,H6,binary,both: levels+rw vs levels (calib2),-0.003142692734906238,7,6,0.6001794871405539,1.0
+loso,H4,binary,both:levels+rw:calib2 G2 vs moving average (H=120 s),0.0007152114202428524,2,2,1.0,1.0
+loso,H4,binary,wrist:levels+rw:calib2 G2 vs moving average (H=120 s),-0.0018107876438714884,3,4,0.49896229860376107,1.0
+loso,H5,three_class,both:levels calib2 vs none,0.08907048563549903,9,6,0.083251953125,0.9990234375
+loso,H5,three_class,both:levels+rw calib2 vs none,0.032613629189665476,9,6,0.45428466796875,1.0
+loso,H6,three_class,chest: levels+rw vs levels (calib2),0.011446883198760771,8,6,0.8260910288588201,1.0
+loso,H6,three_class,wrist: levels+rw vs levels (calib2),0.014255680498651195,10,5,0.30279541015625,1.0
+loso,H6,three_class,both: levels+rw vs levels (calib2),-0.01179894902769624,5,10,0.27685546875,1.0
+loso,H4,three_class,both:levels+rw:calib2 G2 vs moving average (H=120 s),-0.0061913265393669665,2,10,0.04986020375690694,0.6481826488397902
+loso,H4,three_class,wrist:levels+rw:calib2 G2 vs moving average (H=120 s),-0.007751675784086228,3,9,0.034170472692229406,0.4783866176912117
+cross_order,H5,binary,both:levels calib2 vs none,0.04330494478800969,8,6,0.5097974849608639,1.0
+cross_order,H5,binary,both:levels+rw calib2 vs none,0.038432807734621495,9,5,0.550923682773407,1.0
+cross_order,H6,binary,chest: levels+rw vs levels (calib2),-0.0029460214877428783,8,5,0.916511907863894,1.0
+cross_order,H6,binary,wrist: levels+rw vs levels (calib2),-0.0019236612017164239,6,7,0.700703412251682,1.0
+cross_order,H6,binary,both: levels+rw vs levels (calib2),0.004910236964028747,6,4,0.5076243443095237,1.0
+cross_order,H4,binary,both:levels+rw:calib2 G2 vs moving average (H=120 s),-0.003105667544995505,2,5,0.12819017434510785,1.0
+cross_order,H4,binary,wrist:levels+rw:calib2 G2 vs moving average (H=120 s),-0.001455428731588652,4,4,0.6744240722352938,1.0
+cross_order,H5,three_class,both:levels calib2 vs none,0.07716996684520702,10,4,0.1094211588192293,1.0
+cross_order,H5,three_class,both:levels+rw calib2 vs none,0.0164159394301804,7,7,0.8260910288588201,1.0
+cross_order,H6,three_class,chest: levels+rw vs levels (calib2),0.0025517407454442717,5,10,0.7197265625,1.0
+cross_order,H6,three_class,wrist: levels+rw vs levels (calib2),0.017451631809287986,10,5,0.207763671875,1.0
+cross_order,H6,three_class,both: levels+rw vs levels (calib2),-0.0037116842792790004,4,7,0.5937116848746409,1.0
+cross_order,H4,three_class,both:levels+rw:calib2 G2 vs moving average (H=120 s),-0.004756161497861341,3,8,0.1306650895957666,1.0
+cross_order,H4,three_class,wrist:levels+rw:calib2 G2 vs moving average (H=120 s),-0.0007588050173397032,4,8,0.38818640520827785,1.0
