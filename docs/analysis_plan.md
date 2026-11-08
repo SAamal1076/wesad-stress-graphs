@@ -172,6 +172,51 @@ hence stronger fusion. This is a design change, not only the scale revision allo
   fused in 100 % of trials at theta >= 4). Selected by the rule above: eta = 0.25, theta = 4
   (S1 fusion 1 %, S2a 100 %, S2b 92 %, S3 100 %). Descriptive slow null: some edge fused in 15 % of trials.
 
+### M6-C - online time-varying TV graph and a decoupling index (8 Nov 2026, approved by Salman)
+Fixed before any M6-C computation and before the M6-B WESAD results (stage B2/B3) were seen.
+Motivation: the robust M2/M5 finding (heart-rate~movement coupling weakens under stress, 15/15 subjects,
+surviving movement matching) is a graph form of "additional heart rate" (heart rate beyond what movement
+requires; Blix et al. 1974; van de Ven et al., Psychophysiology 2025). M6-C asks whether a causal,
+time-varying coupling graph adds to the classic additional-heart-rate index.
+- Model (causal, one convex problem per window t, given the previous graph):
+  w_t = argmin_{w>=0} theta z_t^T w - beta sum_s log d_s + 2 gamma ||w||^2 + mu ||w - w_{t-1}||_1,
+  z_t,e = ||y_t,s - y_t,r|| (prepared node signals as in M6-B). eta = 0 (no denoising step: the online
+  problem must stay convex); theta = 4 (passed the M6-B gate at eta = 0); beta = 1, gamma = 0.5.
+- mu chosen once by a synthetic gate (below), not tuned on WESAD.
+- Timeline: per subject, 60 s windows ending every 5 s over the whole recording (labelled or not).
+  A labelled window takes the estimate of the latest grid window ending at or before its end.
+- Calibration: grid windows lying entirely inside the first 120 s of the subject's baseline run;
+  excluded from every index evaluation below.
+- Decoupling index: D_t = mean_p ( Wbar_pb - W_t,pb ), b = movement node of the device, p = its
+  physiological nodes (chest: hr_ecg, resp, eda_ph_chest, emg_env; wrist: hr_bvp, pulse_amp,
+  eda_ph_wrist), Wbar = mean over the calibration windows. Higher D = more decoupling.
+- Comparator, additional heart rate: HR_t, ACT_t = window means of the device heart-rate and movement nodes;
+  slope b fitted on the training subjects' baseline + amusement grid windows (within-subject centred least
+  squares, LOSO); intercept a_i = mean over the subject's calibration windows of HR - b ACT;
+  aHR_t = HR_t - a_i - b ACT_t.
+- Combined score: logistic regression (standardised inputs, C = 1) on [aHR, D], trained on the training
+  subjects' labelled grid windows (stress vs baseline + amusement, calibration excluded), LOSO.
+- Hypotheses on per-subject AUC (paired Wilcoxon over 15 subjects, two-sided, Holm over these 4 tests):
+  H10: combined > aHR alone for stress vs baseline + amusement (chest; wrist).
+  H11: combined > aHR alone for stress vs meditation (chest; wrist); meditation is never used for training.
+- H12: classification with the M3 pipeline (LR, inner-CV C), base = device levels without the four drifting
+  features; base + online-graph features (edges, degrees, algebraic connectivity at the window) > base;
+  chest and wrist, binary and 3-class; LOSO and cross-order; Holm over the 4 tests within each scheme.
+  H8 and H9 (M6-B per-window TV graph) are run as registered, in the same pipeline.
+- Descriptive: D alone and HR - calibration mean as scores; detection latency at stress onset and false-alarm
+  rate (threshold = 95th percentile of the score on training subjects' baseline + amusement grid windows;
+  detection = 3 consecutive grid windows above threshold after the stress run starts); time courses of D and
+  aHR for all 15 subjects.
+- Synthetic gate for mu (seed 2027, 100 trials per scenario): n = 5 nodes, 20 min at 4 Hz, the same
+  preparation and grid; nodes 0 and 1 share a source (within correlation 0.6) before 600 s and are
+  independent after ("decouple"), or the reverse ("couple"); other nodes independent white noise.
+  Grid mu in {0, 0.25, 0.5, 1, 2, 4}. Measures on edge (0,1): AUC between windows ending <= 600 s and
+  windows starting >= 600 s; delay = time from 600 s until the edge passes the midpoint of its pre and post
+  medians and stays past it for 3 consecutive windows. Eligible: median delay <= median delay at mu = 0
+  plus 30 s, in both scenarios. Selected: highest mean AUC over the two scenarios; ties within 0.005 go to
+  the smaller mu. mu = 0 is always eligible, so the gate always selects a value; mu = 0 would mean that
+  temporal regularisation does not help and M6-C reduces to the independent per-window graph.
+
 ## Hypotheses (primary comparisons, paired Wilcoxon over the 15 subjects, Holm-corrected)
 - H1: physiological levels beat motion-only under cross-order evaluation (binary and 3-class).
 - H2: levels + G1 (random-walk edges) beat levels alone (macro-F1), for chest and for wrist.
