@@ -6,6 +6,8 @@ A leakage-safe, pre-registered analysis of acute-stress detection from wearable 
 
 The full end-to-end report (fundamentals, methods, results, discussion) is in [`docs/REPORT.md`](docs/REPORT.md).
 
+<p align="center"><img src="figures/report/portfolio.png" width="900" alt="One-page visual summary of the project"></p>
+
 ## Key findings
 
 1. **A clock beats the original paper.** Minutes since the start of the recording alone reach **95.7 %**

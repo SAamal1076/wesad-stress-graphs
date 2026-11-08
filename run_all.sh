@@ -38,6 +38,7 @@ python experiments/m4_stats.py
 echo "M5  interpretation"
 python experiments/m5_interpret.py
 python experiments/m7_report_figures.py
+python experiments/m7_portfolio.py           # one-page visual summary (needs playwright + Chrome)
 
 echo "M6  learned total-variation graphs (B: per-window joint model; C: online graph and decoupling index)"
 python experiments/m6_gate.py                 # synthetic gate for eta and theta (amendment 1)
