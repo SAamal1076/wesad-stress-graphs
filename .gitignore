@@ -4,3 +4,4 @@ __pycache__/
 .pytest_cache/
 *.npz
 *.pkl
+results/m3/oof/

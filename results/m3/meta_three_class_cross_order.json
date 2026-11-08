@@ -1,0 +1,291 @@
+[
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "chest",
+  "set": "levels",
+  "n_features": 21,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "chest",
+  "set": "levels+corr",
+  "n_features": 33,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "chest",
+  "set": "levels+pcorr",
+  "n_features": 33,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "chest",
+  "set": "levels+rw",
+  "n_features": 35,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 2,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "chest",
+  "set": "rw_only",
+  "n_features": 14,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 2,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "wrist",
+  "set": "levels",
+  "n_features": 17,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "wrist",
+  "set": "levels+corr",
+  "n_features": 25,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "wrist",
+  "set": "levels+pcorr",
+  "n_features": 25,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "wrist",
+  "set": "levels+rw",
+  "n_features": 27,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 2,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "wrist",
+  "set": "rw_only",
+  "n_features": 10,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 2,
+    "C": 0.1
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "both",
+  "set": "levels",
+  "n_features": 38,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "both",
+  "set": "levels+corr",
+  "n_features": 58,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "both",
+  "set": "levels+pcorr",
+  "n_features": 58,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "both",
+  "set": "levels+rw",
+  "n_features": 62,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 0.01
+   },
+   {
+    "k": 2,
+    "C": 0.01
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "both",
+  "set": "rw_only",
+  "n_features": 24,
+  "chosen": [
+   {
+    "k": 2,
+    "C": 0.01
+   },
+   {
+    "k": 2,
+    "C": 0.1
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "motion",
+  "set": "motion",
+  "n_features": 16,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 1.0
+   },
+   {
+    "k": 0,
+    "C": 0.1
+   }
+  ]
+ },
+ {
+  "task": "three_class",
+  "scheme": "cross_order",
+  "sensor": "time",
+  "set": "time",
+  "n_features": 1,
+  "chosen": [
+   {
+    "k": 0,
+    "C": 1.0
+   },
+   {
+    "k": 0,
+    "C": 0.01
+   }
+  ]
+ }
+]
