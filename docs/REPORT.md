@@ -396,8 +396,8 @@ The whole analysis reruns from the raw dataset with one script, and the git hist
 2. C. Kirschbaum, K.-M. Pirke, D. Hellhammer. The "Trier Social Stress Test": a tool for investigating psychobiological stress responses in a laboratory setting. Neuropsychobiology, 1993.
 3. A. Noda, H. Hino, M. Tatsuno, S. Akaho, N. Murata. Intrinsic graph structure estimation using graph Laplacian. Neural Computation 26, 1455–1483, 2014.
 4. R. I. Kondor, J. Lafferty. Diffusion kernels on graphs and other discrete structures. ICML 2002.
-5. S. Al-Ali, M. Youssf, J. Rizkallah, M. Hassan, A. Karfoul. An efficient graph structure inference strategy based on random walk model on graph. ICABME 2019.
-6. A. Karfoul, S. Almuhammad Alali. Unfolded ADMM for graph structure inference based on random walk model. EUSIPCO 2026.
+5. S. Al-Muhammad Al-Ali, M. Youssf, J. Rizkallah, M. Hassan, A. Karfoul. An efficient graph structure inference strategy based on random walk model on graph: application to functional brain networks. 2019 Fifth International Conference on Advances in Biomedical Engineering (ICABME), IEEE, pp. 1–4, 2019.
+6. A. Karfoul, S. Almuhammad Alali. Unfolded ADMM for graph structure inference based on random walk model. European Signal Processing Conference (EUSIPCO), 2026.
 7. A. Bashan, R. P. Bartsch, J. W. Kantelhardt, S. Havlin, P. C. Ivanov. Network physiology reveals relations between network topology and physiological function. Nature Communications 3, 702, 2012.
 8. O. Yildiz, A. Subasi. [PAMG-AT: a physiological attention multi-graph model with adaptive topology for stress detection using wearable devices](https://www.biorxiv.org/node/5286049). bioRxiv, 2026.
 9. D. Makowski et al. NeuroKit2: a Python toolbox for neurophysiological signal processing. Behavior Research Methods 53, 1689–1696, 2021.

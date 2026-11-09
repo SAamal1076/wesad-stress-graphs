@@ -94,6 +94,33 @@ docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, mile
 2. `pip install -r requirements.txt` (Python 3.13 was used).
 3. `bash run_all.sh` — runs the whole pipeline in order (about 1.5 hours on 2 CPU cores, 8 GB RAM).
 
+## Related publications
+
+The random-walk graph-inference method used for the coupling graphs (`src/wesad/graphs.py`) comes from:
+
+- S. Al-Muhammad Al-Ali, M. Youssf, J. Rizkallah, M. Hassan, A. Karfoul. *An efficient graph structure
+  inference strategy based on random walk model on graph: application to functional brain networks.*
+  2019 Fifth International Conference on Advances in Biomedical Engineering (ICABME), IEEE, pp. 1–4, 2019.
+- A. Karfoul, S. Almuhammad Alali. *Unfolded ADMM for graph structure inference based on random walk
+  model.* European Signal Processing Conference (EUSIPCO), 2026.
+
+```bibtex
+@inproceedings{al2019efficient,
+  title={An efficient graph structure inference strategy based on random walk model on graph: Application to functional brain networks},
+  author={Al-Ali, Salman Al-Muhammad and Youssf, Mazen and Rizkallah, Jeniffer and Hassan, Mahmoud and Karfoul, Ahmad},
+  booktitle={2019 Fifth International Conference on Advances in Biomedical Engineering (ICABME)},
+  pages={1--4},
+  year={2019},
+  organization={IEEE}
+}
+@inproceedings{karfoulunfolded,
+  title={Unfolded ADMM for Graph Structure Inference Based on Random Walk Model},
+  author={Karfoul, Ahmad and Alali, Salman Almuhammad},
+  booktitle={European Signal Processing Conference (EUSIPCO)},
+  year={2026}
+}
+```
+
 ## Data and licence
 
 - Dataset: P. Schmidt, A. Reiss, R. Duerichen, C. Marberger, K. Van Laerhoven, *Introducing WESAD, a
@@ -106,4 +133,4 @@ Project direction, research questions, decisions and review: **Salman Almuhammad
 analyses and the reports were written and run with an AI assistant (Anthropic's Claude) under his
 direction, milestone by milestone; every milestone was reviewed and approved before the next one started.
 The random-walk graph-inference objective follows his own published work (Al-Ali et al. 2019;
-Karfoul & Almuhammad Alali 2026).
+Karfoul & Almuhammad Alali 2026; see [Related publications](#related-publications)).
