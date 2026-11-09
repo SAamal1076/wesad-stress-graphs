@@ -164,8 +164,9 @@ and use by universities, public research institutes, non-profits and government 
 
 ## Authorship and AI assistance
 
-This project builds on the author's previously published work and was carried out with an AI assistant
-(Anthropic's Claude) for the code, the report writing and the visualisations.
+This project builds on the author's previously published work on graph structure inference for functional
+brain networks, reformulated here for physiological coupling graphs in wearable stress detection, and was
+carried out with an AI assistant (Anthropic's Claude) for the code, the report writing and the visualisations.
 
 Project direction, research questions, decisions and review: the author. The graph methods were proposed
 by the author: the random-walk graph-inference objective follows the author's own published work
