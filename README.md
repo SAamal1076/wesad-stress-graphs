@@ -164,8 +164,11 @@ and use by universities, public research institutes, non-profits and government 
 
 ## Authorship and AI assistance
 
-Project direction, research questions, decisions and review: **Salman Almuhammad Alali**. The code, the
-analyses and the reports were written and run with an AI assistant (Anthropic's Claude) under his
-direction, milestone by milestone; every milestone was reviewed and approved before the next one started.
-The random-walk graph-inference objective follows his own published work (Al-Ali et al. 2019;
-Karfoul & Almuhammad Alali 2026; see [Related publications](#related-publications)).
+This project was carried out with an AI assistant (Anthropic's Claude) for the code, the report writing and
+the visualisations.
+
+Project direction, research questions, decisions and review: the author. The code and the reports were
+written and run with the AI assistant under the author's direction, milestone by milestone; every milestone
+was reviewed and approved before the next one started. The random-walk graph-inference objective follows the
+author's own published work (Al-Ali et al. 2019; Karfoul & Almuhammad Alali 2026; see
+[Related publications](#related-publications)).
