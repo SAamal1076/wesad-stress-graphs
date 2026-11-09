@@ -1,6 +1,6 @@
 # WESAD — M5 report: interpretation
 
-*8 Nov 2026. Repository `wesad-stress/` (analyses fixed in `docs/analysis_plan.md`, commit ac25d7c, before running). All M5 results are descriptive.*
+*8 Nov 2026. Analyses fixed in `docs/analysis_plan.md`, commit ac25d7c, before running). All M5 results are descriptive.*
 
 **Final model interpreted:** logistic regression (C = 0.1), chest + wrist level features + random-walk coupling graph (λ = 0.02), without the four drifting features, no calibration. It was chosen after M4, so its scores are not new evidence: binary per-subject macro-F1 0.937 LOSO / 0.943 cross-order; 3-class 0.728 / 0.697.
 

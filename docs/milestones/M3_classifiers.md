@@ -1,6 +1,6 @@
 # WESAD — M3 results: classifiers under LOSO and cross-protocol-order
 
-*8 Nov 2026. Repository `wesad-stress/`. Decisions (primary model, tuning, Holm family) were committed in `docs/analysis_plan.md` before any classifier was run (commit f79d868).*
+*8 Nov 2026. Decisions (primary model, tuning, Holm family) were committed in `docs/analysis_plan.md` before any classifier was run (commit f79d868).*
 
 ## Setup
 - 60 s windows, step 5 s; binary (stress vs baseline + amusement) and 3-class.

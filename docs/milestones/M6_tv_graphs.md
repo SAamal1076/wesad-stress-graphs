@@ -1,6 +1,6 @@
 # WESAD — M6 report: learned total-variation graphs
 
-*8 Nov 2026. Repository `wesad-stress/`. Settings fixed in `docs/analysis_plan.md` before each computation: commit 6e887d0 (M6-B plan, H8–H9), 9a17db7 (amendment 1 after the synthetic test), 4fdffba (M6-C plan, H10–H12, μ gate). Salman approved the direction and delegated the decisions after each test.*
+*8 Nov 2026. Settings fixed in `docs/analysis_plan.md` before each computation: commit 6e887d0 (M6-B plan, H8–H9), 9a17db7 (amendment 1 after the synthetic test), 4fdffba (M6-C plan, H10–H12, μ gate). Salman approved the direction and delegated the decisions after each test.*
 
 ## 1. M6-B: per-window joint graph-TV denoising and graph learning
 

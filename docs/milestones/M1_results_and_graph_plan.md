@@ -1,6 +1,6 @@
 # WESAD — M1 results and proposed graph method
 
-*8 Nov 2026. Code in the repository `wesad-stress/` (git commits aab84a5, 33ccea4). Proposal awaiting Salman's approval before M2.*
+*8 Nov 2026. Code at git commits aab84a5, 33ccea4. The proposal below was approved before M2.*
 
 ## M1 — what was built
 - `src/wesad/windows.py`: windows that lie entirely inside one condition run (labels from the 350 Hz label stream). 60 s / step 5 s gives 8143 windows (baseline 3354, stress 1826, amusement 944, meditation 2019); 10/20/30 s indexes also saved.
@@ -34,7 +34,7 @@ Paper reference (Schmidt et al. 2018, pooled accuracy): binary 93.1%, 3-class 80
 ## Proposed graph method (two graph components, both from Salman's own research line)
 1. **G1 — Learned physiological coupling graph per window (network physiology).**
    - Nodes: instantaneous heart rate (ECG or BVP), respiration, phasic and tonic EDA, temperature, and motion as an explicit nuisance node.
-   - Edges inferred from the data of each window with graph learning (smoothness / constrained random-walk inference, as in Salman's J4/C7), with partial correlation as the simple baseline.
+   - Edges inferred from the data of each window with graph learning (smoothness / constrained random-walk inference, as in Al-Ali et al. 2019; Karfoul & Almuhammad Alali 2026), with partial correlation as the simple baseline.
    - Features: edge weights and spectral descriptors; the hypothesis is that stress changes the coupling (for example cardio-respiratory decoupling), not only the levels.
    - Difference from PAMG-AT: edges are estimated per window and per person, so the coupling itself is the interpretable biomarker.
 2. **G2 — Label-free test-time adaptation on the new person's window graph.**

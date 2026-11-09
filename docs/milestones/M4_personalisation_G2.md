@@ -1,6 +1,6 @@
 # WESAD — M4 results: personalisation and test-time graph smoothing (G2)
 
-*8 Nov 2026. Repository `wesad-stress/` (commit 3f3aadf). All M4 settings were committed in `docs/analysis_plan.md` before running (commit 55eb58b). Evaluation excludes the windows overlapping the calibration period for every model, so all comparisons use identical test windows.*
+*8 Nov 2026. Commit 3f3aadf). All M4 settings were committed in `docs/analysis_plan.md` before running (commit 55eb58b). Evaluation excludes the windows overlapping the calibration period for every model, so all comparisons use identical test windows.*
 
 ## Personalisation: centre features on the test subject's first 2 minutes of baseline
 Per-subject macro-F1, logistic regression, chest + wrist:
@@ -36,7 +36,7 @@ Not supported: levels + random walk vs levels with calibration, differences −0
   2. the feature-drift ("clock-likeness") analysis, and the gain from removing drifting features (0.943 cross-order binary without calibration);
   3. the stress-specific heart-rate↔movement decoupling (15/15 subjects within person, M2);
   4. a concrete, explained failure case (S2, detached temperature sensor).
-- Relevance to VR-STRESS: VR training scenarios also run in fixed orders, so the same time-in-session shortcut and the same cross-order test apply.
+- Relevance to stress estimation in VR: VR training scenarios also run in fixed orders, so the same time-in-session shortcut and the same cross-order test apply.
 
 ## Files
 `results/m4/personalisation_summary.csv`, `personalisation_per_subject.csv`, `g2_per_subject.csv`, `g2_latency.csv`, `hypothesis_tests.csv`; `figures/m4/personalisation_per_subject.png`.

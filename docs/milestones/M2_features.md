@@ -1,6 +1,6 @@
 # WESAD — M2 report: physiological features and coupling graphs (G1)
 
-*8 Nov 2026. Repository `wesad-stress/` (commit 7761824). No classifier has been trained yet; nothing below was used to choose features (the feature sets were fixed in `docs/analysis_plan.md`, committed before M2).*
+*8 Nov 2026. Commit 7761824). No classifier has been trained yet; nothing below was used to choose features (the feature sets were fixed in `docs/analysis_plan.md`, committed before M2).*
 
 ## What was built
 - **Per-subject processing** (`src/wesad/physio.py`, NeuroKit2 0.3.0 + own code): ECG R-peaks, wrist pulse peaks and pulse amplitude, breaths and breath depth, EDA tonic/phasic split and SCR peaks (chest and wrist), temperature, EMG envelope, movement intensity. Unsupervised and per subject, so no leakage across subjects. Filters are zero-phase (offline; a limitation for real time).
@@ -9,7 +9,7 @@
   - Chest graph: heart rate, respiration, phasic EDA, EMG envelope, chest movement (10 edges).
   - Wrist graph: pulse rate, pulse amplitude, phasic EDA, wrist movement (6 edges).
   - Dependency matrix T = max |cross-correlation| within ±5 s.
-  - Edges by three estimators: correlation (T), partial correlation (Ledoit-Wolf), and **random-walk diffusion-kernel inference** (Salman's J4/C7 objective, min ||T − α·expm(−L(w))||² + λΣw, w ≥ 0), batched, with the exact gradient of the matrix exponential.
+  - Edges by three estimators: correlation (T), partial correlation (Ledoit-Wolf), and **random-walk diffusion-kernel inference** (objective of Al-Ali et al. 2019; Karfoul & Almuhammad Alali 2026: min ||T − α·expm(−L(w))||² + λΣw, w ≥ 0), batched, with the exact gradient of the matrix exponential.
 - **Tests: 12 pass**, including: analytic gradient = finite differences; on synthetic sparse graphs the random-walk estimate recovers edges better than reading T directly (AUC); on a chain a–b–c the indirect edge a–c is set to exactly 0 while T(a,c) = 0.16.
 - One implementation detail fixed before any model and recorded in the plan: T is normalised D^-1/2 T D^-1/2 before random-walk inference (relative residual ~0.7 → ~0.05), because the diffusion kernel has unit row sums.
 

@@ -75,12 +75,16 @@ src/wesad/      windows.py, evaluation.py (LOSO + leakage checks), physio.py (si
 experiments/    m1_* shortcuts and cross-order check · m2_* features and descriptive effects ·
                 m3_* classifiers and tests · m4_* personalisation, no-clock sensitivity, G2 smoothing ·
                 m5_interpret.py (decoupling robustness, ablation, self-reports, meditation, failures) ·
-                m6_* / m6c_* learned TV graphs: synthetic gates, WESAD features, decoupling index, tests
+                m6_* / m6c_* learned TV graphs: synthetic gates, WESAD features, decoupling index, tests ·
+                m7_* report figures, visual panels and the one-page summary
 tests/          leakage, windowing and graph-inference tests (pytest)
 results/        summary tables (CSV) per milestone; per-window data is not redistributed
 figures/        all figures
 docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, milestone reports,
                 presentation.pdf (slides)
+LICENSE         code licence (PolyForm Noncommercial 1.0.0)
+LICENSE-docs    docs, figures and results licence (CC BY-NC 4.0)
+CITATION.cff    citation metadata (GitHub "Cite this repository")
 ```
 
 ## One-page visual summary
@@ -93,6 +97,27 @@ docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, mile
    unzip it to `data/WESAD/` (folders `S2` … `S17`). Raw data is not included here (dataset terms).
 2. `pip install -r requirements.txt` (Python 3.13 was used).
 3. `bash run_all.sh` — runs the whole pipeline in order (about 1.5 hours on 2 CPU cores, 8 GB RAM).
+   The last step (M7 visuals) also needs a browser for Playwright: `playwright install chromium`,
+   or set `CHROME_PATH` to an installed Chrome.
+
+## How to cite
+
+If you use this code, its results or its figures, please cite the repository (GitHub's **"Cite this repository"**
+button gives the same reference from [`CITATION.cff`](CITATION.cff)):
+
+> S. Almuhammad Alali. *Stress detection on WESAD: shortcuts, generalisation and physiological coupling graphs.*
+> 2026. https://github.com/SAamal1076/wesad-stress-graphs
+
+```bibtex
+@software{almuhammadalali2026wesad,
+  title  = {Stress detection on {WESAD}: shortcuts, generalisation and physiological coupling graphs},
+  author = {Almuhammad Alali, Salman},
+  year   = {2026},
+  url    = {https://github.com/SAamal1076/wesad-stress-graphs}
+}
+```
+
+If you use the random-walk graph inference, please also cite the papers below.
 
 ## Related publications
 

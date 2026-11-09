@@ -1,0 +1,67 @@
+cff-version: 1.2.0
+message: "If you use this code, its results or its figures, please cite it as below."
+type: software
+title: "Stress detection on WESAD: shortcuts, generalisation and physiological coupling graphs"
+abstract: >-
+  A leakage-safe, pre-registered analysis of acute-stress detection from wearable physiology on the
+  open WESAD dataset, with cross-protocol-order evaluation, physiological coupling graphs inferred by
+  a random-walk model, and a causal time-varying total-variation graph.
+authors:
+  - family-names: "Almuhammad Alali"
+    given-names: "Salman"
+repository-code: "https://github.com/SAamal1076/wesad-stress-graphs"
+url: "https://github.com/SAamal1076/wesad-stress-graphs"
+license: PolyForm-Noncommercial-1.0.0
+date-released: "2026-11-09"
+keywords:
+  - stress detection
+  - wearable sensors
+  - WESAD
+  - physiological signals
+  - graph learning
+  - network physiology
+references:
+  - type: conference-paper
+    title: "An efficient graph structure inference strategy based on random walk model on graph: Application to functional brain networks"
+    authors:
+      - family-names: "Al-Ali"
+        given-names: "Salman Al-Muhammad"
+      - family-names: "Youssf"
+        given-names: "Mazen"
+      - family-names: "Rizkallah"
+        given-names: "Jeniffer"
+      - family-names: "Hassan"
+        given-names: "Mahmoud"
+      - family-names: "Karfoul"
+        given-names: "Ahmad"
+    collection-title: "2019 Fifth International Conference on Advances in Biomedical Engineering (ICABME)"
+    publisher:
+      name: "IEEE"
+    start: 1
+    end: 4
+    year: 2019
+  - type: conference-paper
+    title: "Unfolded ADMM for Graph Structure Inference Based on Random Walk Model"
+    authors:
+      - family-names: "Karfoul"
+        given-names: "Ahmad"
+      - family-names: "Almuhammad Alali"
+        given-names: "Salman"
+    collection-title: "European Signal Processing Conference (EUSIPCO)"
+    year: 2026
+  - type: conference-paper
+    title: "Introducing WESAD, a multimodal dataset for wearable stress and affect detection"
+    authors:
+      - family-names: "Schmidt"
+        given-names: "Philip"
+      - family-names: "Reiss"
+        given-names: "Attila"
+      - family-names: "Duerichen"
+        given-names: "Robert"
+      - family-names: "Marberger"
+        given-names: "Claus"
+      - family-names: "Van Laerhoven"
+        given-names: "Kristof"
+    collection-title: "Proceedings of the 20th ACM International Conference on Multimodal Interaction (ICMI)"
+    doi: "10.1145/3242969.3242985"
+    year: 2018
