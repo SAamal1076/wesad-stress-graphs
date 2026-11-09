@@ -135,7 +135,7 @@ Approved by Salman on 8 Nov 2026 (option B: nodes = signals inside one window).
 ### Amendment 1 to M6-B (8 Nov 2026, approved by Salman; before any WESAD window is processed)
 Reason (stage B1, synthetic data only, commit e1fb204): with beta = 1 the model depends on a single number,
 theta = lambda / sqrt(2 gamma) (substituting w = v / sqrt(2 gamma); checked numerically to 1e-9). The
-pre-registered values give theta = 0.14-0.85, where the learned weights are almost uniform. Values that
+pre-specified values give theta = 0.14-0.85, where the learned weights are almost uniform. Values that
 recover two planted clusters (theta ~ 3-10) also make independent signals collapse into one cluster
 (93 % of trials at theta = 3.2, 13 % at 9.5, 10 % at 16), and a 2+2+1 structure is never recovered exactly.
 The cause is a feedback loop in the joint model: fused nodes get zero distance, hence a larger weight,

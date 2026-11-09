@@ -1,4 +1,4 @@
-"""M6-C stage C3b - evaluation (pre-registered in docs/analysis_plan.md).
+"""M6-C stage C3b - evaluation (pre-specified in docs/analysis_plan.md).
 
 Part 1  Indices on the causal grid: decoupling index D, additional heart rate (aHR), their LOSO logistic
         combination, and HR minus its calibration mean; per-subject AUCs; H10-H11 (paired Wilcoxon, Holm).

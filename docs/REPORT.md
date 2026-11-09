@@ -4,7 +4,7 @@
 
 ## Summary
 
-On the WESAD dataset, physiology detects the stress condition across people with per-subject macro-F1 of 0.94 even when the protocol order changes, but a model that only reads the clock beats the original paper under the standard evaluation. The graph methods built for this project, including a learned total-variation graph tracked in real time, did not give statistically supported gains; the robust contributions are about how stress models should be evaluated.
+On the WESAD dataset, physiology detects the stress condition across people with per-subject macro-F1 of 0.94 even when the protocol order changes, but a model that only reads the clock beats the original paper under the standard evaluation. The graph methods built for this project, including a learned total-variation graph tracked causally and online, did not give statistically supported gains; the robust contributions are about how stress models should be evaluated.
 
 **Question.** Can a model trained on some people recognise acute stress in a new person from wearable signals, in a way that would transfer to virtual-reality training? Stress here means the Trier Social Stress Test (TSST) condition of WESAD, compared with rest and amusement.
 
@@ -14,10 +14,10 @@ On the WESAD dataset, physiology detects the stress condition across people with
 
 1. **The clock beats the paper.** Minutes since the start of the recording alone give 95.7% pooled accuracy for stress vs non-stress (paper: 93.1%), because the protocol schedule is almost the same for everyone. Training on one protocol order and testing on the other drops this shortcut to 66.9%.
 2. **Physiology generalises.** Chest + wrist physiology keeps per-subject macro-F1 at 0.92 (LOSO) and 0.88 (cross-order). Removing four slowly drifting features raises cross-order F1 to 0.943 without any calibration.
-3. **Graphs did not add significant accuracy.** Coupling-graph features add 0 to 4 points; with 15 subjects none of the pre-registered tests survives Holm correction. Graph smoothing of predictions equals a moving average.
+3. **Graphs did not add significant accuracy.** Coupling-graph features add 0 to 4 points; with 15 subjects none of the pre-specified tests survives Holm correction. Graph smoothing of predictions equals a moving average.
 4. **Stress decouples heart rate from movement.** The heart-rate↔movement coupling weakens under stress in 15 of 15 subjects, survives matching on movement level, and does not appear under amusement.
 5. **The model's "stress" partly means "unusual breathing".** Never trained on meditation, it calls 36% of meditation windows stress, because slow deep breathing resembles breathing during the spoken stress test.
-6. **A learned total-variation graph confirms the decoupling but adds nothing to heart rate.** Made convex and causal after a synthetic test exposed false fusion, it tracks coupling in real time; heart rate minus its rest level still detects stress best (per-subject AUC 0.94 chest), and correcting heart rate for movement hurts because the stress test itself involves movement.
+6. **A learned total-variation graph confirms the decoupling but adds nothing to heart rate.** Made convex and causal after a synthetic test exposed false fusion, it tracks coupling causally, update by update; heart rate minus its rest level still detects stress best (per-subject AUC 0.94 chest), and correcting heart rate for movement hurts because the stress test itself involves movement.
 
 **Bottom line.** High WESAD accuracies are easy to obtain and easy to over-read. The useful lessons for stress estimation in VR are to test across scenario order, to watch features that drift with time in session, and to check models on states they were not trained on.
 
@@ -69,9 +69,11 @@ The task is to classify the state a person is in now from the last 60 seconds of
 - **No per-subject normalisation over the whole session:** z-scoring a person with statistics of their own full recording uses their stress data at test time. Personalisation, when used, comes only from a short rest period at the start, and those windows are removed from evaluation.
 - **Cross-protocol-order evaluation** (introduced in section 5): train on order A, test on order B, and the reverse.
 
+A survey of 22 electrodermal-activity-based stress studies (Liu and Ning 2026, ref. 17) reports several in which test information reached a fitted step (a scaler, a feature selection or a projection fitted on all data before cross-validation), so published accuracies are not always comparable. The same survey notes that, on WESAD, a larger window step raised F1 by more than 11 points through overlap between adjacent windows, which is why effective sample size is counted here in non-overlapping minutes.
+
 **Metrics.** The primary metric is macro-F1 computed per test subject, then averaged over the 15 subjects (mean ± SD), so that each person counts once and the minority class counts as much as the majority. Pooled accuracy over all windows is reported only to compare with Schmidt et al. 2018. A majority-class guess scores 70% pooled accuracy in the binary task and 53% in the 3-class task.
 
-**Pre-registration and statistics.** Before each stage, the hypotheses, configurations, hyperparameter grids and tests were written into `docs/analysis_plan.md` and committed to git, so the commit history shows that no setting was chosen after seeing its result. Methods are compared with paired Wilcoxon signed-rank tests on the 15 per-subject scores, with Holm correction within each evaluation scheme. With n = 15, only large and consistent effects can reach significance; this is stated rather than worked around.
+**Pre-specification and statistics.** Before each stage, the hypotheses, configurations, hyperparameter grids and tests were written into `docs/analysis_plan.md` and committed to git, so the commit history shows that no setting was chosen after seeing its result. This is pre-specification in the author's own repository, not registration with an external registry: it documents the order of the work but cannot prove it. Methods are compared with paired Wilcoxon signed-rank tests on the 15 per-subject scores, with Holm correction within each evaluation scheme. With n = 15, only large and consistent effects can reach significance; this is stated rather than worked around.
 
 ## 4. Data audit: what had to be fixed before any model
 
@@ -200,9 +202,11 @@ Physiology reaches the paper's level under LOSO and keeps most of it across prot
 | Binary, wrist only | 90.3% / 88.9% (levels, LR) | 88.3% / 86.1% (RF) |
 | 3-class | 79.6% / 75.8% | 80.3% / 72.5% (chest, AdaBoost) |
 
+Other published WESAD results under LOSO are in the same range for the binary task: SELF-CARE (Rashid et al. 2023, ref. 18, 60 s windows, 5 s step) reports 94.1% with wrist signals and 93.7% with chest signals; Bobade and Vani (2020, ref. 19) report up to 95.2% with a feed-forward network (best of several models, mean of per-subject accuracies). These are the authors' own figures, taken from their abstracts and protocol sections; they were not re-run here.
+
 The comparison is only indicative: the clock alone scores 95.7% under the same protocol (section 5), and the best row uses partial correlation, which was not the pre-specified main estimator.
 
-**Pre-registered tests** (paired Wilcoxon over subjects, Holm-corrected within each scheme, 14 tests):
+**Pre-specified tests** (paired Wilcoxon over subjects, Holm-corrected within each scheme, 14 tests):
 
 - **H1, physiology beats movement:** binary LOSO +0.11 F1, better for 11/15 subjects, p = 0.004 uncorrected, 0.06 after Holm; cross-order p = 0.04, Holm 0.58. A clear trend, not significant.
 - **H2, graphs add to levels:** not supported. Largest gain: chest, 3-class, LOSO +0.035, 11/15 subjects, Holm-corrected p = 0.95.
@@ -225,7 +229,7 @@ The single most effective change was not a new method but removing four drifting
 | 3-class, LOSO (levels) | 0.698 | 0.787 |
 | 3-class, cross-order (levels) | 0.633 | 0.710 |
 
-With partial-correlation graph features and calibration, pooled LOSO accuracy reaches 97.3% (binary) and 86.5% (3-class). These are not like-for-like with the paper, which used no calibration. The pre-registered test (H5) is not significant: only 7–10 of 15 subjects improve, and the means are driven by a few large gains (S13 binary cross-order 0.64 → 0.99; S2 0.47 → 0.82). A 5-minute calibration was not better than 2 minutes.
+With partial-correlation graph features and calibration, pooled LOSO accuracy reaches 97.3% (binary) and 86.5% (3-class). These are not like-for-like with the paper, which used no calibration. The pre-specified test (H5) is not significant: only 7–10 of 15 subjects improve, and the means are driven by a few large gains (S13 binary cross-order 0.64 → 0.99; S2 0.47 → 0.82). A 5-minute calibration was not better than 2 minutes.
 
 **Calibration can bring the clock back.** "Feature minus early baseline" grows with time in session for any drifting feature, and baseline is always first. In the 3-class task with calibration, F1 is 0.787 with the drifting features and 0.718 without them: part of the calibration gain is time, not physiology. This was anticipated in the plan and is a general caution for calibration in fixed-order protocols.
 
@@ -282,7 +286,7 @@ min over X, W of  ½‖X − Y‖² + λ Σ W_st ‖x_s − x_t‖ − β Σ_s l
 
 **A synthetic test changed the design before any WESAD window was touched.**
 - The solver passed its unit tests: two-node closed form, KKT conditions, and a monotone objective.
-- With β = 1 the model depends on one number only, θ = λ/√(2γ). The pre-registered values gave θ = 0.14–0.85, where the learned weights are almost uniform.
+- With β = 1 the model depends on one number only, θ = λ/√(2γ). The pre-specified values gave θ = 0.14–0.85, where the learned weights are almost uniform.
 - Values that recover planted clusters (θ ≈ 3–10) make independent signals collapse into one cluster in 10–93% of trials. The cause is a feedback loop: fused nodes have zero distance, which gives a larger weight, which fuses them further.
 - The amendment (commit `9a17db7`) mixes the distance the graph sees, (1 − η)‖y_s − y_t‖ + η‖x_s − x_t‖. It replaces the cluster count with a continuous fusion degree, F = 1 − TV_W(X)/TV_W(Y).
 - A synthetic gate fixed in advance then selected **η = 0.25, θ = 4**:
@@ -309,7 +313,7 @@ w_t = argmin over w ≥ 0 of  θ z_tᵀw − β Σ log d_s + 2γ‖w‖² + μ�
 - The last term is the TV of the graph along time: edges move only when the data push harder than μ, so coupling changes appear as steps.
 - The solver is the same primal-dual scheme with a second dual variable, verified against KKT conditions.
 - A synthetic gate with a planted coupling change selected **μ = 0.25**: AUC between before and after the change rose from 0.992 to 0.998, for 13–17 s of extra delay. Larger μ froze the graph.
-- On WESAD the method runs causally at about 0.2 s per 5 s step on 2 CPU cores, batched over the 15 subjects, which is compatible with real time.
+- On WESAD the method runs causally at about 0.2 s per 5 s step on 2 CPU cores, batched over the 15 subjects, which is fast enough for real-time use. The node series it reads still come from offline processing (zero-phase filters, whole-recording peak detection), so an end-to-end latency was not measured.
 
 **Indices.** All three are relative to the person's first two minutes of baseline (the calibration windows, excluded from evaluation).
 - **Decoupling index:** D_t = mean over physiological nodes p of (W̄_p,move − W_t,p,move), where W̄ is the calibration mean.
@@ -336,7 +340,7 @@ w_t = argmin over w ≥ 0 of  θ z_tᵀw − β Σ log d_s + 2γ‖w‖² + μ�
 
 ### 11.3 What M6 shows
 
-- The learned TV graph works as a method: tested solvers, two synthetic gates fixed in advance, and causal real-time tracking.
+- The learned TV graph works as a method: tested solvers, two synthetic gates fixed in advance, and causal, online tracking.
 - The coupling it measures changes with stress consistently and in the expected direction.
 - At the window level, however, this change is small next to the change in heart-rate level. So it adds nothing to heart-rate indices or classifiers with 15 subjects.
 - **The synthetic gate was decisive:** without it, the joint model would have reported "clusters" that independent signals produce.
@@ -351,7 +355,7 @@ The project set out to beat the paper with a novel graph method; what it can act
 - **Evaluation design.** Cross-protocol-order testing exposes a shortcut that LOSO hides: the clock scores 95.7% under LOSO and 66.9% across orders, while physiology moves by 1–5 points. It costs nothing and should accompany any LOSO result on fixed-order protocols.
 - **Drift as a diagnostic.** A simple drift index (correlation with time inside a constant condition) flagged four features. Removing them improved cross-order F1 to 0.943 and turned the worst subject (S2) into a good one: the feature was measuring a loose sensor and the passage of time.
 - **A physiological marker with a mechanism.** The heart-rate↔movement decoupling is stress-specific, points the same way in every subject and survives movement matching. It is the kind of interpretable, person-relative marker a VR system could monitor.
-- **Pre-registration.** Writing each stage's settings into git before running it kept the negative results honest and makes every number traceable.
+- **Pre-specification.** Writing each stage's settings into git before running it kept the negative results honest and makes every number traceable.
 
 **What did not work, and why**
 
@@ -382,11 +386,11 @@ The project set out to beat the paper with a novel graph method; what it can act
 
 The whole analysis reruns from the raw dataset with one script, and the git history shows each stage's plan committed before its results.
 
-**Repository** (`wesad-stress-graphs`): `scripts/` data preparation and audit; `src/wesad/` windowing, leakage-checked evaluation, signal processing and graph inference; `experiments/` one script per milestone; `tests/` 25 pytest tests (windowing, leakage, graph inference, TV-graph solvers; one kept as a documented expected failure of the original M6-B model); `results/` summary tables; `figures/`; `docs/` this report, the pre-registered `analysis_plan.md` and the milestone reports. Raw and per-window data are not redistributed.
+**Repository** (`wesad-stress-graphs`): `scripts/` data preparation and audit; `src/wesad/` windowing, leakage-checked evaluation, signal processing and graph inference; `experiments/` one script per milestone; `tests/` 25 pytest tests (windowing, leakage, graph inference, TV-graph solvers; one kept as a documented expected failure of the original M6-B model); `results/` summary tables; `figures/`; `docs/` this report, the pre-specified `analysis_plan.md` and the milestone reports. Raw and per-window data are not redistributed.
 
 **To reproduce:** download WESAD, unzip it to `data/WESAD/`, `pip install -r requirements.txt`, then `bash run_all.sh` (about 1.5 hours on 2 CPU cores and 8 GB RAM, of which M6 takes about 50 minutes). Environment: Python 3.13, NumPy 2.5, SciPy 1.18, pandas 3.0, scikit-learn 1.9, NeuroKit2 0.3.
 
-**Pre-registration trail** (commit → what it fixed before the results existed): `40f71b8` analysis plan, features and hypotheses H1–H4 · `f79d868` M3 model, tuning and Holm family · `55eb58b` M4 calibration, no-clock sensitivity, G2 settings and H4–H6 · `ac25d7c` M5 interpretation analyses · `6e887d0` M6-B TV graph and H8–H9 · `9a17db7` M6-B amendment after the synthetic test (η, θ, gate) · `4fdffba` M6-C online graph, decoupling index, H10–H12 and μ gate.
+**Pre-specification trail** (commit → what it fixed before the results existed): `40f71b8` analysis plan, features and hypotheses H1–H4 · `f79d868` M3 model, tuning and Holm family · `55eb58b` M4 calibration, no-clock sensitivity, G2 settings and H4–H6 · `ac25d7c` M5 interpretation analyses · `6e887d0` M6-B TV graph and H8–H9 · `9a17db7` M6-B amendment after the synthetic test (η, θ, gate) · `4fdffba` M6-C online graph, decoupling index, H10–H12 and μ gate.
 
 **Authorship.** Salman Almuhammad Alali defined the project, its questions and its direction, reviewed and approved each milestone, and made the decisions recorded here (see the README for how the work was produced). The random-walk graph-inference objective is taken from his own published work.
 
@@ -408,3 +412,6 @@ The whole analysis reruns from the raw dataset with one script, and the git hist
 14. H. Yokota, K. Yamada, Y. Tanaka, A. Ortega. [Time-varying graph learning with constraints on graph temporal variation](https://arxiv.org/abs/2001.03346). arXiv:2001.03346, 2020.
 15. A. S. Blix, S. B. Strømme, H. Ursin. Additional heart rate – an indicator of psychological activation. Aerospace Medicine 45, 1219–1222, 1974.
 16. S. R. B. van de Ven, M. J. Gevonden, M. L. Noordzij, E. J. C. de Geus. [Accelerometer-based heart rate adjustment for ambulatory stress research](https://pubmed.ncbi.nlm.nih.gov/39562517/). Psychophysiology 62, e14721, 2025.
+17. G. Liu, Z. Ning. [Electrodermal activity (EDA) for stress detection: a comprehensive survey and benchmark](https://arxiv.org/abs/2609.22622). arXiv:2609.22622, 2026.
+18. N. Rashid, T. Mortlock, M. A. Al Faruque. Stress detection using context-aware sensor fusion from wearable devices (SELF-CARE). IEEE Internet of Things Journal 10(16), 14114–14127, 2023.
+19. P. Bobade, M. Vani. Stress detection with machine learning and deep learning using multimodal physiological data. ICIRCA 2020, pp. 51–57. [doi:10.1109/ICIRCA48905.2020.9183244](https://doi.org/10.1109/ICIRCA48905.2020.9183244).

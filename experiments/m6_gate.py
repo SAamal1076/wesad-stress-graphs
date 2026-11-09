@@ -91,7 +91,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     df.to_csv(out / "gate.csv", index=False)
 
-    # pre-registered decision
+    # pre-specified decision
     piv = df.pivot_table(index=["eta", "theta"], columns="scenario",
                          values=["fused_any", "ratio_pass_rate"], aggfunc="first")
     dec = pd.DataFrame({

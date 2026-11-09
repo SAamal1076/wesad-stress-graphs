@@ -1,8 +1,12 @@
 # Stress detection on WESAD: shortcuts, generalisation and physiological coupling graphs
 
-A leakage-safe, pre-registered analysis of acute-stress detection from wearable physiology on the open
+A leakage-safe, pre-specified analysis of acute-stress detection from wearable physiology on the open
 [WESAD](https://archive.ics.uci.edu/dataset/465/wesad+wearable+stress+and+affect+detection) dataset
 (Schmidt et al., ICMI 2018), with a focus on **what generalises across people and across protocol order**.
+
+> **AI assistance.** The code, analyses, figures and reports in this repository were written and run with an AI
+> assistant (Anthropic's Claude) under the author's direction. Direction, research questions, decisions and review are
+> the author's; see [Authorship and AI assistance](#authorship-and-ai-assistance).
 
 The full end-to-end report (fundamentals, methods, results, discussion) is in [`docs/REPORT.md`](docs/REPORT.md).
 
@@ -11,9 +15,9 @@ The full end-to-end report (fundamentals, methods, results, discussion) is in [`
 ## Presentation and visual summary
 
 **Slides (16 pages, PDF):** [`docs/presentation.pdf`](docs/presentation.pdf), the project in plain language, from the
-data and the clock shortcut to the real-time version and what carries over to VR.
+data and the clock shortcut to the causal online version and what carries over to VR.
 
-<p align="center"><a href="docs/presentation.pdf"><img src="figures/report/presentation_preview.png" width="1000" alt="Six slides from the presentation: title, the study at a glance, the clock shortcut, the cross-order fix, heart-movement decoupling under stress, and the real-time version"></a></p>
+<p align="center"><a href="docs/presentation.pdf"><img src="figures/report/presentation_preview.png" width="1000" alt="Six slides from the presentation: title, the study at a glance, the clock shortcut, the cross-order fix, heart-movement decoupling under stress, and the causal online version"></a></p>
 
 **One-page visual summary:** [below](#one-page-visual-summary), full size in [`figures/report/portfolio.png`](figures/report/portfolio.png).
 
@@ -29,10 +33,10 @@ data and the clock shortcut to the real-time version and what carries over to VR
    calibration, and fixes the worst subject (S2, detached temperature sensor).
 4. **Stress decouples heart rate from movement.** The heart-rate↔movement coupling weakens under stress in
    15/15 subjects, survives matching on movement level, and does not occur under amusement.
-5. **Graph methods did not give significant accuracy gains** (pre-registered tests, Holm-corrected, n = 15),
+5. **Graph methods did not give significant accuracy gains** (pre-specified tests, Holm-corrected, n = 15),
    and the model calls 36 % of (never-seen) meditation windows "stress": slow deep breathing resembles
    breathing during the spoken stress test.
-6. **A learned total-variation graph, tracked causally in real time, confirms the decoupling but adds
+6. **A learned total-variation graph, tracked causally and online, confirms the decoupling but adds
    nothing to heart rate.** A synthetic test exposed false fusion in the planned joint model before any
    WESAD data was used; the amended convex online version works, but heart rate minus its rest level stays
    the best index (per-subject AUC 0.94 chest), and correcting heart rate for movement hurts because the
@@ -80,7 +84,7 @@ experiments/    m1_* shortcuts and cross-order check · m2_* features and descri
 tests/          leakage, windowing and graph-inference tests (pytest)
 results/        summary tables (CSV) per milestone; per-window data is not redistributed
 figures/        all figures
-docs/           REPORT.md, analysis_plan.md (pre-registration), data audit, milestone reports,
+docs/           REPORT.md, analysis_plan.md (pre-specification), data audit, milestone reports,
                 presentation.pdf (slides)
 LICENSE         code licence (PolyForm Noncommercial 1.0.0)
 LICENSE-docs    docs, figures and results licence (CC BY-NC 4.0)
@@ -89,7 +93,7 @@ CITATION.cff    citation metadata (GitHub "Cite this repository")
 
 ## One-page visual summary
 
-<p align="center"><img src="figures/report/portfolio.png" width="900" alt="One-page visual summary of the project: data, clock shortcut, cross-order test, features and coupling graphs, results, real-time version"></p>
+<p align="center"><img src="figures/report/portfolio.png" width="900" alt="One-page visual summary of the project: data, clock shortcut, cross-order test, features and coupling graphs, results, causal online version"></p>
 
 ## Reproduce
 

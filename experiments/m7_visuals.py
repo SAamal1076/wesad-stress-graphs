@@ -342,7 +342,7 @@ def svg_steps(width=1408):
 def svg_vr_tiles(width=1408):
     tiles = [("person", "Works on a new trainee", ["Tested on people and on", "a schedule it never saw"]),
              ("lens", "Interpretable", ["Named body measures and", "a readable coupling marker"]),
-             ("watch", "Near real time", ["Updates every 5 s; stress", "onset flagged in a median", "of 13 s"]),
+             ("watch", "Causal, online", ["Updates every 5 s; stress", "onset flagged in a median", "of 13 s"]),
              ("heartmove", "Body + behaviour", ["Links body signals to", "movement; ready for head,", "hand and gaze in VR"]),
              ("repo", "Reproducible", ["Plan fixed in git before", "each analysis; one script", "reruns everything"])]
     cw, p = width / 5, []
@@ -571,7 +571,7 @@ def svg_graphical_abstract(width=1600, height=680):
     p.append(f'<rect x="48" y="{sy}" width="{width - 96}" height="72" rx="14" fill="{INK}"/>'
              f'<text x="80" y="{sy + 44}" style="font-size:20px;font-weight:700;fill:#fff">For VR training:</text>')
     for k, (ic, t) in enumerate((("person", "works on a new trainee"), ("lens", "interpretable"),
-                                 ("watch", "near real time"), ("heartmove", "body + behaviour"))):
+                                 ("watch", "causal, online"), ("heartmove", "body + behaviour"))):
         xx = 270 + k * 320
         p.append(icon(ic, xx, sy + 16, 0.82, "#ffffff") + f'<text x="{xx + 52}" y="{sy + 44}" '
                  f'style="font-size:19px;fill:#e6eaf0">{t}</text>')

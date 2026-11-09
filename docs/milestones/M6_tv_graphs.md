@@ -9,7 +9,7 @@
 **Stage B1, solver and synthetic data.**
 - Unit tests passed: two-node closed form, KKT conditions, monotone objective.
 - With β = 1 the model depends on one number only, θ = λ/√(2γ) (checked numerically to 1e-9).
-- The pre-registered θ of 0.14–0.85 learned near-uniform weights.
+- The pre-specified θ of 0.14–0.85 learned near-uniform weights.
 - θ of 3–10 recovers planted clusters, but at those values independent signals collapse into one cluster in 10–93% of trials.
 - The cause is a feedback loop: fusion gives zero distance, a larger weight, then more fusion.
 
@@ -91,7 +91,7 @@ Same pattern under LOSO and cross-order, for binary and 3-class, chest and wrist
 
 ## 4. Conclusion
 
-- The learned TV graph is a sound, tested and real-time-capable method.
+- The learned TV graph is a sound, tested method that is causal and fast enough for online use.
 - The coupling it measures changes with stress consistently, but the change is small next to the change in heart-rate level. It adds nothing to heart-rate indices or classifiers with 15 subjects.
 - **The synthetic gate was decisive:** it caught false fusion in the planned joint model before any WESAD window was processed.
 - **For VR:** movement-aware stress indices can only be judged where movement varies independently of stress. WESAD's stress test, where people stand and speak, cannot provide that.

@@ -76,7 +76,7 @@ def test_model_depends_on_theta_only():
     assert np.allclose(out[0][0], out[1][0], atol=1e-8) and np.allclose(out[0][1], out[1][1], atol=1e-6)
 
 
-@pytest.mark.xfail(reason='B1 finding, kept as documentation: the original model (eta = 1) at the pre-registered scale (gamma = 0.25, theta = 0.42) learns near-uniform weights; see amendment 1 in docs/analysis_plan.md', strict=False)
+@pytest.mark.xfail(reason='B1 finding, kept as documentation: the original model (eta = 1) at the pre-specified scale (gamma = 0.25, theta = 0.42) learns near-uniform weights; see amendment 1 in docs/analysis_plan.md', strict=False)
 def test_recovers_planted_clusters():
     rng = np.random.default_rng(3)
     m = 240

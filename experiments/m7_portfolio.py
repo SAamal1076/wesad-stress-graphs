@@ -106,7 +106,7 @@ time, and combines body and behaviour. The study was built around those needs.</
 {v['tiles']}
 </section>
 
-<footer><div><b>Salman Almuhammad Alali</b>.</div><div>Data: WESAD, Schmidt et al., ICMI 2018, scientific non-commercial use.</div></footer>
+<footer><div><b>Salman Almuhammad Alali</b>.</div><div>Data: WESAD, Schmidt et al., ICMI 2018, scientific non-commercial use.</div><div>Code and analyses written with an AI assistant (Claude) under the author's direction.</div></footer>
 </main></body></html>"""
 
 

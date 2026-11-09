@@ -6,7 +6,7 @@ seconds (including i). Edge weights combine temporal proximity and physiological
 d = distance between level-feature vectors standardised with TRAINING-subject statistics.
 Graph Tikhonov: x = (I + L)^-1 p ; the output is x at window i.
 Controls: causal moving average over the same horizon; Tikhonov with the temporal kernel only.
-All hyperparameters are fixed (pre-registered); no tuning on any subject.
+All hyperparameters are fixed (pre-specified); no tuning on any subject.
 """
 import pathlib
 import sys

@@ -3,7 +3,7 @@ message: "If you use this code, its results or its figures, please cite it as be
 type: software
 title: "Stress detection on WESAD: shortcuts, generalisation and physiological coupling graphs"
 abstract: >-
-  A leakage-safe, pre-registered analysis of acute-stress detection from wearable physiology on the
+  A leakage-safe, pre-specified analysis of acute-stress detection from wearable physiology on the
   open WESAD dataset, with cross-protocol-order evaluation, physiological coupling graphs inferred by
   a random-walk model, and a causal time-varying total-variation graph.
 authors:
