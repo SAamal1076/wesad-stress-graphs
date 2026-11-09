@@ -413,5 +413,5 @@ The whole analysis reruns from the raw dataset with one script, and the git hist
 15. A. S. Blix, S. B. Strømme, H. Ursin. Additional heart rate – an indicator of psychological activation. Aerospace Medicine 45, 1219–1222, 1974.
 16. S. R. B. van de Ven, M. J. Gevonden, M. L. Noordzij, E. J. C. de Geus. [Accelerometer-based heart rate adjustment for ambulatory stress research](https://pubmed.ncbi.nlm.nih.gov/39562517/). Psychophysiology 62, e14721, 2025.
 17. G. Liu, Z. Ning. [Electrodermal activity (EDA) for stress detection: a comprehensive survey and benchmark](https://arxiv.org/abs/2609.22622). arXiv:2609.22622, 2026.
-18. N. Rashid, T. Mortlock, M. A. Al Faruque. Stress detection using context-aware sensor fusion from wearable devices (SELF-CARE). IEEE Internet of Things Journal 10(16), 14114–14127, 2023.
+18. N. Rashid, T. Mortlock, M. A. Al Faruque. Stress detection using context-aware sensor fusion from wearable devices (SELF-CARE). IEEE Internet of Things Journal 10(16), 14114–14127, 2023. [doi:10.1109/JIOT.2023.3265768](https://doi.org/10.1109/JIOT.2023.3265768).
 19. P. Bobade, M. Vani. Stress detection with machine learning and deep learning using multimodal physiological data. ICIRCA 2020, pp. 51–57. [doi:10.1109/ICIRCA48905.2020.9183244](https://doi.org/10.1109/ICIRCA48905.2020.9183244).
