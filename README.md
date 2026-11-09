@@ -164,11 +164,12 @@ and use by universities, public research institutes, non-profits and government 
 
 ## Authorship and AI assistance
 
-This project was carried out with an AI assistant (Anthropic's Claude) for the code, the report writing and
-the visualisations.
+This project builds on the author's previously published work and was carried out with an AI assistant
+(Anthropic's Claude) for the code, the report writing and the visualisations.
 
-Project direction, research questions, decisions and review: the author. The code and the reports were
-written and run with the AI assistant under the author's direction, milestone by milestone; every milestone
-was reviewed and approved before the next one started. The random-walk graph-inference objective follows the
-author's own published work (Al-Ali et al. 2019; Karfoul & Almuhammad Alali 2026; see
-[Related publications](#related-publications)).
+Project direction, research questions, decisions and review: the author. The graph methods were proposed
+by the author: the random-walk graph-inference objective follows the author's own published work
+(Al-Ali et al. 2019; Karfoul & Almuhammad Alali 2026; see [Related publications](#related-publications)),
+and the learned total-variation graph was the author's proposal. The code and the reports were written and
+run with the AI assistant under the author's direction, milestone by milestone; every milestone was
+reviewed and approved before the next one started.
