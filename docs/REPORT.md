@@ -150,7 +150,7 @@ T_{ij} = \max_{|\ell| \le 20} \left| \frac{1}{m-|\ell|} \sum_{t} x_i(t)\, x_j(t+
 3. **Random-walk diffusion-kernel inference** (Noda et al. 2014; Al-Ali et al. 2019; Karfoul & Almuhammad Alali 2026). The observed dependency is modelled as the transition kernel of a random walk on an unknown weighted graph, which contains every multi-step (indirect) path. Inverting it keeps the direct edges:
 
 ```math
-\min_{w \ge 0,\ \alpha \ge 0} \; \big\| \tilde T - \alpha\, e^{-L(w)} \big\|_F^2 + \lambda \sum_{i<j} w_{ij}, \qquad \tilde T = D^{-1/2} T D^{-1/2}
+\min_{w \ge 0,\ \alpha \ge 0} \; \big\| \tilde T - \alpha\, e^{-L(w)} \big\|_F^2 + \lambda \sum_{i \lt j} w_{ij}, \qquad \tilde T = D^{-1/2} T D^{-1/2}
 ```
 
 Here L(w) is the graph Laplacian of the edge weights and D the diagonal of row sums of T. The normalisation was added because the diffusion kernel has unit row sums; without it the fit is poor (relative residual about 0.7, against about 0.05 with it). It was fixed before any classifier was trained. The problem is solved by projected proximal gradient with momentum, batched over all 8,143 windows; α has a closed form, and the gradient of the matrix exponential is exact via the eigen-decomposition L = VΛVᵀ (Daleckii–Krein):
@@ -159,7 +159,7 @@ Here L(w) is the graph Laplacian of the edge weights and D the diagonal of row s
 \nabla_L = V\big( (V^\top G_E V) \circ \Gamma \big) V^\top, \quad \Gamma_{ij} = \frac{e^{-\lambda_i} - e^{-\lambda_j}}{\lambda_i - \lambda_j}, \quad \Gamma_{ii} = -e^{-\lambda_i}
 ```
 
-with G_E = −2α(T̃ − αE) the gradient with respect to E = e^{−L}. λ is chosen in {0.005, 0.02, 0.05} by inner cross-validation.
+with G_E = −2α(T̃ − αE) the gradient with respect to E = exp(−L). λ is chosen in {0.005, 0.02, 0.05} by inner cross-validation.
 
 **Verification (unit tests).** The analytic gradient equals finite differences; on 60 random sparse graphs the estimator recovers true edges better than reading T directly (AUC above 0.9 and above T's); on a chain a–b–c, the indirect pair has T_ac = 0.16 but the inferred direct edge a–c is exactly 0.
 
