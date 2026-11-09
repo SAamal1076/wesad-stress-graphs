@@ -307,7 +307,7 @@ min over X, W of  ½‖X − Y‖² + λ Σ W_st ‖x_s − x_t‖ − β Σ_s l
 
 **Model.** At each 60 s window ending every 5 s over the whole recording, the graph solves one convex problem given the previous graph:
 
-w_t = argmin over w ≥ 0 of  θ z_tᵀw − β Σ log d_s + 2γ‖w‖² + μ‖w − w_{t−1}‖₁,  with z_t,e = ‖y_t,s − y_t,r‖
+w_t = argmin over w ≥ 0 of  θ z_tᵀw − β Σ log d_s + 2γ‖w‖² + μ‖w − w_(t−1)‖₁,  with z_t,e = ‖y_t,s − y_t,r‖
 
 - The first three terms learn the graph from the TV of the signals on it (η = 0, so the problem stays convex).
 - The last term is the TV of the graph along time: edges move only when the data push harder than μ, so coupling changes appear as steps.

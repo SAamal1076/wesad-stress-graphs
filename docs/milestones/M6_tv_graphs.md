@@ -41,7 +41,7 @@ With slow independent signals (descriptive), some edge fused in 15% of trials.
 
 **Model.** At each 60 s window ending every 5 s over the whole recording:
 
-w_t = argmin over w ≥ 0 of θ z_tᵀw − βΣ log d + 2γ‖w‖² + μ‖w − w_{t−1}‖₁
+w_t = argmin over w ≥ 0 of θ z_tᵀw − βΣ log d + 2γ‖w‖² + μ‖w − w_(t−1)‖₁
 
 - Settings: η = 0 (convex), θ = 4.
 - Solver: primal-dual FBF with a second dual for the ℓ1 term. Tests check KKT conditions, optimality against perturbations, μ = 0 being equivalent to independent windows, and a large μ freezing the graph.
