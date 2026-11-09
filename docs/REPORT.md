@@ -1,6 +1,6 @@
 # Stress detection on WESAD: shortcuts, generalisation and physiological coupling graphs
 
-*End-to-end report, 8 November 2026 · Salman Almuhammad Alali (direction), with an AI assistant (Claude) for code, analyses and writing.*
+*End-to-end report, 8 November 2026 · Salman Almuhammad Alali.*
 
 ## Summary
 
@@ -388,7 +388,7 @@ The whole analysis reruns from the raw dataset with one script, and the git hist
 
 **Pre-registration trail** (commit → what it fixed before the results existed): `40f71b8` analysis plan, features and hypotheses H1–H4 · `f79d868` M3 model, tuning and Holm family · `55eb58b` M4 calibration, no-clock sensitivity, G2 settings and H4–H6 · `ac25d7c` M5 interpretation analyses · `6e887d0` M6-B TV graph and H8–H9 · `9a17db7` M6-B amendment after the synthetic test (η, θ, gate) · `4fdffba` M6-C online graph, decoupling index, H10–H12 and μ gate.
 
-**Authorship and AI assistance.** Salman Almuhammad Alali defined the project, its questions and its direction, reviewed and approved each milestone, and made the decisions recorded here. The code, analyses, figures and this report were written and run with an AI assistant (Anthropic's Claude) under his direction. The random-walk graph-inference objective is taken from his own published work.
+**Authorship.** Salman Almuhammad Alali defined the project, its questions and its direction, reviewed and approved each milestone, and made the decisions recorded here (see the README for how the work was produced). The random-walk graph-inference objective is taken from his own published work.
 
 ## References
 

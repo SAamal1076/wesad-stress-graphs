@@ -1,58 +1,58 @@
-# WESAD — تقرير الفحص الاستكشافي (قبل أي معالجة)
+# WESAD — M0 data audit (before any processing)
 
-*8 نوفمبر 2026. 15 شخصاً (S2–S17 دون S12). الأرقام محسوبة من ملفات `pkl` الأصلية بدقة 700 Hz، وهي فحوص وصفية سريعة (كاشف قمم بسيط) وليست خط المعالجة النهائي.*
+*8 Nov 2026. 15 subjects (S2–S17, no S12). Numbers are computed from the original `pkl` files at 700 Hz. These are quick descriptive checks (simple peak detector), not the final processing pipeline.*
 
-## 1. ما الذي يحتويه ما عندنا
-- 15 مجلداً، لكل شخص `SX.pkl` و`SX_quest.csv` و`SX_readme.txt`. لا NaN في أي إشارة.
-- الصدر بوحدات فيزيائية (ECG mV، EDA µS، Temp °C، ACC g، Resp %)، والمعصم ACC بوحدة **1/64 g** (لا تخلطه بالصدر).
-- مدة التسجيل 87–118 دقيقة. أطوال الصدر وكل إشارات المعصم **متطابقة للثانية** عند الجميع.
-- التزامن: ذروة الارتباط بين طاقة حركة الصدر والمعصم عند lag ≤ 1 ث لدى الجميع.
+## 1. What the data contains
+- 15 folders, each with `SX.pkl`, `SX_quest.csv` and `SX_readme.txt`. No NaN in any signal.
+- Chest signals are in physical units (ECG mV, EDA µS, Temp °C, ACC g, Resp %); wrist ACC is in units of **1/64 g** (do not mix it with the chest).
+- Recording length 87–118 min. The chest and all wrist signals have **identical lengths to the second** for everyone.
+- Synchronisation: the cross-correlation peak between chest and wrist movement energy is at lag ≤ 1 s for everyone.
 
-## 2. الـ labels والتوازن
-- **45% من التسجيل label 0** (انتقالي)، و2.7% labels 5–7. المستخدَم فعلاً **52%** (42–58% حسب الشخص).
-- مقطع واحد نظيف لكل من baseline/stress/amusement ومقطعان للتأمل، بلا تجزؤ. أقصر مقطع 337 ث.
-- الدقائق الكلية: baseline 294، stress 166، amusement 93، meditation 197.
-- نسبة stress: **30%** إن كان غير-الضغط = baseline+amusement، و**22%** إن أضفنا meditation. أساس الأغلبية: 53% (3 فئات)، 39% (4 فئات). لذا macro-F1 وbalanced accuracy.
-- نوافذ 60 ث بخطوة 5 ث: 8142 نافذة، لكنها شديدة التداخل. عدد النوافذ **غير المتداخلة** 714 فقط (stress 160، amusement 90). العيّنة الفعلية صغيرة.
-- **ترتيب البروتوكول يختلف:** Base>Fun>Medi1>TSST>Medi2 (8 أشخاص)، Base>TSST>Medi1>Fun>Medi2 (6)، وS14: Base>TSST>Medi2>Fun>Medi1. **baseline أولاً دائماً.**
+## 2. Labels and class balance
+- **45 % of the recording is label 0** (transient) and 2.7 % is labels 5–7. The part actually used is **52 %** (42–58 % depending on the subject).
+- One clean segment each of baseline / stress / amusement and two meditation segments, with no fragmentation. Shortest segment: 337 s.
+- Total minutes: baseline 294, stress 166, amusement 93, meditation 197.
+- Stress share: **30 %** if non-stress = baseline + amusement, **22 %** if meditation is added. Majority baseline: 53 % (3 classes), 39 % (4 classes). Hence macro-F1 and balanced accuracy.
+- 60 s windows with a 5 s step: 8142 windows, but heavily overlapping. Only 714 **non-overlapping** windows (stress 160, amusement 90). The effective sample is small.
+- **The protocol order differs:** Base > Fun > Medi1 > TSST > Medi2 (8 subjects), Base > TSST > Medi1 > Fun > Medi2 (6), and S14: Base > TSST > Medi2 > Fun > Medi1. **Baseline always comes first.**
 
-## 3. مصيدة `quest.csv`
-- الأوقات بصيغة **دقائق.ثواني مع حذف الصفر الأخير**: `50.3` = 50:30، و`32` = 32:00.
-- محور `quest.csv` يسبق محور `pkl` بإزاحة ثابتة لكل شخص (33–155 ث)، والتفسير الصحيح يعطي انحرافاً 0.00 ث داخل الشخص. **اقطع الإشارات بالـ labels لا بأوقات quest.**
-- كل حالة في البروتوكول أطول بـ 20 ث بالضبط من مقطع الـ labels (75 من 75).
+## 3. The `quest.csv` trap
+- Times are in **minutes.seconds with the trailing zero dropped**: `50.3` = 50:30 and `32` = 32:00.
+- The `quest.csv` time axis leads the `pkl` axis by a constant offset per subject (33–155 s); the correct interpretation gives 0.00 s deviation within each subject. **Segment the signals by the labels, not by the quest times.**
+- Every protocol condition is exactly 20 s longer than its label segment (75 of 75).
 
-## 4. جودة الإشارات
-| المشكلة | التفصيل |
+## 4. Signal quality
+| Issue | Detail |
 |---|---|
-| ارتطام S3 | 0.12 ث (83 عينة) داخل stress عند t=2531 ث: كل قنوات الصدر على حدود المحوّل. كان يسبب حرارة −122/+72 °C بعد التقطيع. **صُحّح في `prepare_wesad.py`** |
-| حشو الأصفار | أول عينة (t=0) من كل إشارة مصغَّرة كانت مشوّهة (label 0). **صُحّح بـ `padtype="line"`** |
-| حرارة الصدر S2 وS17 | المستشعر غير مثبّت كلياً (الـ readme). S2: 28.9 °C في baseline ثم قفزة عند ~23 د |
-| EDA صدر شبه ثابت | S14 (SD 0.08 µS) وS8 (0.19): لا استجابة ظاهرة. فروق EDA الصدر بين الأشخاص هائلة (وسيط 1.0 µS عند S10، 12.3 عند S7) |
-| تسطّح ACC/TEMP المعصم | تكميم الجهاز (1/64 g و0.02 °C)، وليس انقطاعاً |
-| ECG | قطبية R موجبة عند الجميع (≥94% من القمم). القص عند ±1.5 mV نادر (<0.1%). 0.997–1.0 من RR معقولة |
-| BVP المعصم | يطابق نبض ECG في baseline (فرق وسيط 1.0 نبضة/د) لكن **في stress 8.4**: يتدهور مع الحركة |
+| S3 ADC glitch | 0.12 s (83 samples) inside stress at t = 2531 s: every chest channel at the converter limits. It produced temperatures of −122/+72 °C after downsampling. **Fixed in `prepare_wesad.py`** |
+| Zero padding | The first sample (t = 0) of every downsampled signal was distorted (label 0). **Fixed with `padtype="line"`** |
+| Chest temperature S2 and S17 | Sensor not fully attached (per the readme). S2: 28.9 °C in baseline, then a jump at ~23 min |
+| Almost flat chest EDA | S14 (SD 0.08 µS) and S8 (0.19): no visible response. Between-subject differences in chest EDA are huge (median 1.0 µS for S10, 12.3 for S7) |
+| Flat-looking wrist ACC/TEMP | Device quantisation (1/64 g and 0.02 °C), not dropouts |
+| ECG | Positive R polarity for everyone (≥ 94 % of peaks). Clipping at ±1.5 mV is rare (< 0.1 %). 0.997–1.0 of RR intervals are plausible |
+| Wrist BVP | Matches the ECG heart rate in baseline (median difference 1.0 bpm) but **8.4 bpm in stress**: it degrades with movement |
 
-## 5. هل تتغير الفيزيولوجيا بين الحالات؟ (وصفي، n=15)
-stress مقابل baseline (عدد الأشخاص الذين ارتفعت عندهم القيمة من 15):
-- نبض ECG: 15/15، وسيط +22 نبضة/د؛ نبض BVP +12.
-- EDA: صدر 13/15، معصم 14/15.
-- RMSSD: ينخفض عند 10/15 (p=0.07، ضعيف).
-- حركة المعصم: ترتفع 12/15، وحركة الصدر 13/15.
-- معدل التنفس **ينخفض** عند 12/15 (13.8 مقابل 15.7).
-- amusement لا يختلف عن baseline في النبض (فرق 0.2).
-- الاختبارات 44 دون تصحيح؛ ما يُعتدّ به هو الاتساق (15/15) وحجم الأثر.
+## 5. Does physiology change between conditions? (descriptive, n = 15)
+Stress vs baseline (number of subjects, out of 15, whose value increased):
+- ECG heart rate: 15/15, median +22 bpm; BVP heart rate +12.
+- EDA: chest 13/15, wrist 14/15.
+- RMSSD: decreases in 10/15 (p = 0.07, weak).
+- Movement: wrist rises in 12/15, chest in 13/15.
+- Breathing rate **decreases** in 12/15 (13.8 vs 15.7).
+- Amusement does not differ from baseline in heart rate (difference 0.2).
+- 44 tests without correction; what counts is consistency (15/15) and effect size.
 
-## 6. تحذيرات منهجية (تخص تسرّب المعلومات والتفسير)
-1. **الحركة متداخلة مع stress:** TSST فيه كلام وحساب، فيرتفع ACC وينخفض التنفس. قد يتعلم النموذج «الكلام والحركة» لا «الضغط». قيّم نماذج بدون ACC.
-2. **الزمن متداخل مع baseline:** baseline دائماً أولاً، وحرارة الصدر ترتفع في كل ما بعده (15/15) وحرارة المعصم تنخفض. أي ميزة بانجراف زمني تفصل «مبكر/متأخر». احذر من الحرارة وEDA tonic وراقب أهميتها.
-3. **EDA يتناقص في أول ~20 دقيقة** (انظر `subjects/S2.png`: من 6 إلى 1.2 µS خلال baseline). مستوى EDA في baseline ليس «حالة» ثابتة.
-4. **التخصيص (سؤال البحث 3):** حجم الأثر داخل الشخص ≈ ضعف حجمه بين الأشخاص في EDA الصدر (1.08 مقابل 0.56) والحرارة (1.22 مقابل 0.53)، لكنه متقارب في النبض (1.28 مقابل 1.66). الفرق بين الأشخاص كبير، فالتطبيع بـ baseline مهم لـ EDA والحرارة. ويجب أن يُحسب **داخل طيّة التدريب فقط**، وللشخص المختبَر من دقائق baseline الخاصة به فقط، وبيانها صراحة.
-5. **صدق الـ labels:** ارتفع STAI-state عند 15/15 في TSST (وسيط +8، p=0.0006)، وانخفضت valence عند 14/15. حتى من ذكر الـ readme أنه لم يتوتر (S6، S15) ارتفع STAI عنده ≥ +6. S3 أبلغ valence=7 بعد stress وفق الـ readme.
-6. صفّ PANAS بعد TSST فيه 26 بنداً (يضيف Angry وIrritated) وغيره 24، فتنتقل مواضع البنود (استخدمت Stressed=21، Nervous=16).
+## 6. Methodological warnings (leakage and interpretation)
+1. **Movement is confounded with stress:** the TSST involves speaking and arithmetic, so ACC rises and breathing slows. A model may learn "speaking and moving" rather than "stress". Evaluate models without ACC.
+2. **Time is confounded with baseline:** baseline always comes first; chest temperature rises in everything after it (15/15) and wrist temperature falls. Any feature that drifts with time separates "early" from "late". Be careful with temperature and tonic EDA and monitor their importance.
+3. **EDA decreases over the first ~20 minutes** (see `subjects/S2.png`: from 6 to 1.2 µS during baseline). The EDA level in baseline is not a stable "state".
+4. **Personalisation (research question 3):** the within-subject effect size is about twice the between-subject effect size for chest EDA (1.08 vs 0.56) and temperature (1.22 vs 0.53), but similar for heart rate (1.28 vs 1.66). Between-subject differences are large, so baseline normalisation matters for EDA and temperature. It must be computed **inside the training fold only**, and for the test subject from their own baseline minutes only, and stated explicitly.
+5. **Label validity:** STAI-state rose in 15/15 after the TSST (median +8, p = 0.0006) and valence fell in 14/15. Even the subjects whose readme says they did not feel stressed (S6, S15) had STAI increases ≥ +6. According to the readme, S3 reported valence = 7 after stress.
+6. The PANAS row after the TSST has 26 items (it adds Angry and Irritated) while the others have 24, so item positions shift (used: Stressed = 21, Nervous = 16).
 
-## 7. ما تغيّر في `prepare_wesad.py` بعد أول تشغيل حقيقي
-1. `repair_adc_glitches`: استبدال عينات الارتطام بالاستيفاء الخطي قبل التقطيع.
-2. `resample_poly(..., padtype="line")` بدل الحشو بالأصفار.
+## 7. What changed in `prepare_wesad.py` after the first real run
+1. `repair_adc_glitches`: glitch samples are replaced by linear interpolation before downsampling.
+2. `resample_poly(..., padtype="line")` instead of zero padding.
 
-## 8. الملفات
-`results/eda/`: `inventory.csv`، `label_segments.csv`، `schedule_check.csv`، `condition_features.csv`، `subject_qc.csv`، `questionnaires.csv`، `glitches.csv`. الأشكال في `figures/eda/` (و`subjects/` لكل شخص).
+## 8. Files
+`results/eda/`: `inventory.csv`, `label_segments.csv`, `schedule_check.csv`, `condition_features.csv`, `subject_qc.csv`, `questionnaires.csv`, `glitches.csv`. Figures in `figures/eda/` (and `subjects/` for each subject).

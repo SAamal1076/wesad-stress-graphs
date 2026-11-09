@@ -1,6 +1,6 @@
 # WESAD — M1 results and proposed graph method
 
-*8 Nov 2026. Code in the session repository `wesad-stress/` (git commits aab84a5, 33ccea4). Proposal awaiting Salman's approval before M2.*
+*8 Nov 2026. Code in the repository `wesad-stress/` (git commits aab84a5, 33ccea4). Proposal awaiting Salman's approval before M2.*
 
 ## M1 — what was built
 - `src/wesad/windows.py`: windows that lie entirely inside one condition run (labels from the 350 Hz label stream). 60 s / step 5 s gives 8143 windows (baseline 3354, stress 1826, amusement 944, meditation 2019); 10/20/30 s indexes also saved.

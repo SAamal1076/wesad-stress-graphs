@@ -1,6 +1,6 @@
 # WESAD — M2 report: physiological features and coupling graphs (G1)
 
-*8 Nov 2026. Repository `wesad-stress/` in the Claude session (commit 7761824). No classifier has been trained yet; nothing below was used to choose features (the feature sets were fixed in `docs/analysis_plan.md`, committed before M2).*
+*8 Nov 2026. Repository `wesad-stress/` (commit 7761824). No classifier has been trained yet; nothing below was used to choose features (the feature sets were fixed in `docs/analysis_plan.md`, committed before M2).*
 
 ## What was built
 - **Per-subject processing** (`src/wesad/physio.py`, NeuroKit2 0.3.0 + own code): ECG R-peaks, wrist pulse peaks and pulse amplitude, breaths and breath depth, EDA tonic/phasic split and SCR peaks (chest and wrist), temperature, EMG envelope, movement intensity. Unsupervised and per subject, so no leakage across subjects. Filters are zero-phase (offline; a limitation for real time).
