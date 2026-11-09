@@ -121,11 +121,21 @@ The random-walk graph-inference method used for the coupling graphs (`src/wesad/
 }
 ```
 
-## Data and licence
+## Licence: free for non-commercial use, commercial use by licence
 
-- Dataset: P. Schmidt, A. Reiss, R. Duerichen, C. Marberger, K. Van Laerhoven, *Introducing WESAD, a
-  multimodal dataset for wearable stress and affect detection*, ICMI 2018. Scientific, non-commercial use.
-- Code: MIT licence (see `LICENSE`).
+This work is **free for everyone for non-commercial use**: research, teaching, study, personal projects,
+and use by universities, public research institutes, non-profits and government bodies.
+**Commercial use is not permitted without a commercial licence** from the author.
+
+- **Code** (`src/`, `experiments/`, `scripts/`, `tests/`, `run_all.sh`):
+  [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0) (see `LICENSE`).
+- **Report, documentation, figures, presentation and result tables**:
+  [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) (see `LICENSE-docs`). Credit the author when you reuse them.
+- **Commercial licence** (for example, use in a product, a paid service or company R&D): contact the author,
+  [Salman Almuhammad Alali](https://github.com/SAamal1076).
+- **Dataset**: WESAD is not included and stays under its own terms (scientific, non-commercial use).
+  P. Schmidt, A. Reiss, R. Duerichen, C. Marberger, K. Van Laerhoven, *Introducing WESAD, a multimodal
+  dataset for wearable stress and affect detection*, ICMI 2018.
 
 ## Authorship and AI assistance
 
